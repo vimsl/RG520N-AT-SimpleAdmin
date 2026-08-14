@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+<title>SimpleAdmin - SMS</title>
+<script>
+(function(){
+  var k="cpe_dashboard_dark";
+  function d(){var v=localStorage.getItem(k);if(v===null)return window.matchMedia("(prefers-color-scheme: dark)").matches;return v==="true"}
+  if(d())document.documentElement.classList.add("dark");
+})();
+</script>
+<link rel="stylesheet" href="/new/assets/index-CUTK8mfj.css"/>
+<style>
+.sms-card{background:var(--glass);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:12px;transition:all .3s}
+.sms-card:hover{box-shadow:0 4px 12px rgba(0,0,0,0.08)}
+.sms-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.sms-tabs{display:flex;gap:4px;margin-bottom:16px;background:var(--card);border-radius:10px;padding:4px}
+.sms-tab{flex:1;padding:10px;text-align:center;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;color:var(--text2);border:none;background:transparent}
+.sms-tab.active{background:var(--glass);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,0.1)}
+.sms-tab:hover:not(.active){color:var(--text)}
+.msg-list{max-height:400px;overflow-y:auto}
+.msg-item{padding:12px;border-bottom:1px solid var(--border);transition:background .2s}
+.msg-item:last-child{border-bottom:none}
+.msg-item:hover{background:var(--card)}
+.msg-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.msg-phone{font-size:14px;font-weight:600;color:var(--text)}
+.msg-time{font-size:11px;color:var(--text2)}
+.msg-body{font-size:13px;color:var(--text2);line-height:1.5}
+.msg-actions{display:flex;gap:8px;margin-top:8px}
+.msg-btn{padding:4px 8px;border:1px solid var(--border);border-radius:6px;font-size:11px;cursor:pointer;transition:all .2s;background:var(--card);color:var(--text)}
+.msg-btn:hover{background:var(--glass)}
+.msg-btn.delete{color:var(--red);border-color:var(--red)}
+.msg-btn.delete:hover{background:rgba(255,59,48,0.1)}
+.compose-form{display:flex;flex-direction:column;gap:12px}
+.input-group{display:flex;flex-direction:column;gap:4px}
+.input-label{font-size:12px;color:var(--text2);font-weight:500}
+.input-field{padding:12px;border:1px solid var(--border);border-radius:10px;font-size:14px;background:var(--card);color:var(--text);transition:all .2s}
+.input-field:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,122,255,0.1)}
+textarea.input-field{min-height:120px;resize:vertical;font-family:inherit}
+.btn-row{display:flex;gap:8px}
+.btn{padding:12px 20px;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s}
+.btn-primary{background:var(--blue);color:#fff}
+.btn-primary:hover{opacity:0.9}
+.btn-primary:disabled{opacity:0.5;cursor:not-allowed}
+.btn-secondary{background:var(--card);color:var(--text);border:1px solid var(--border)}
+.btn-secondary:hover{background:var(--glass)}
+.char-count{text-align:right;font-size:11px;color:var(--text2)}
+.empty-state{text-align:center;padding:40px 20px;color:var(--text2)}
+.empty-state svg{width:48px;height:48px;margin-bottom:12px;opacity:0.5}
+.empty-state p{font-size:14px}
+.status-msg{padding:12px;border-radius:8px;margin-bottom:12px;font-size:13px;display:none}
+.status-msg.success{background:rgba(52,199,89,0.1);color:var(--green);display:block}
+.status-msg.error{background:rgba(255,59,48,0.1);color:var(--red);display:block}
+.status-msg.info{background:rgba(0,122,255,0.1);color:var(--blue);display:block}
+.sms-badge{background:var(--red);color:#fff;font-size:10px;padding:2px 6px;border-radius:10px;margin-left:4px}
+</style>
+</head>
+<body>
+<div class="app">
+<nav class="navbar">
+<div class="navbar-inner">
+<div class="nav-links">
+<a href="new/index.html" class="nav-link">新版首页</a>
+<a href="/" class="nav-link">首页</a>
+<a href="/network.html" class="nav-link">网络</a>
+<a href="/settings.html" class="nav-link">设置</a>
+<span class="nav-active">短信</span>
+<a href="/deviceinfo.html" class="nav-link">设备信息</a>
+<a href="/firmware.html" class="nav-link">固件管理</a>
+<a href="/fan.html" class="nav-link">风扇管理</a>
+</div>
+<div class="nav-actions">
+<button class="nav-btn" onclick="toggleLang()" title="Switch Language"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg><span id="lang-code" style="font-size:10px;font-weight:600">zh</span></button>
+<button class="nav-btn" onclick="toggleDark()" title="Toggle Theme" id="theme-btn">🌙</button>
+</div>
+</div>
+</nav>
+
+<main style="max-width:640px;margin:0 auto;padding:12px">
+<div id="status" class="status-msg"></div>
+
+<div class="sms-card">
+<div class="sms-tabs">
+<button class="sms-tab active" onclick="switchTab('inbox')" id="tab-inbox">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:middle;margin-right:4px"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+收件箱
+<span id="inbox-badge" class="sms-badge" style="display:none">0</span>
+</button>
+<button class="sms-tab" onclick="switchTab('compose')" id="tab-compose">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:middle;margin-right:4px"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+发信息
+</button>
+</div>
+
+<div id="inbox-panel">
+<div class="msg-list" id="msg-list">
+<div class="empty-state">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+<p>加载短信中...</p>
+</div>
+</div>
+<div style="display:flex;gap:8px;margin-top:12px">
+<button class="btn btn-secondary" onclick="loadMessages()" style="flex:1">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:middle;margin-right:4px"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/></svg>
+刷新
+</button>
+<button class="btn btn-secondary" onclick="deleteAll()" style="flex:1;color:var(--red);border-color:var(--red)">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:middle;margin-right:4px"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+全部删除
+</button>
+</div>
+</div>
+
+<div id="compose-panel" style="display:none">
+<div class="compose-form">
+<div class="input-group">
+<label class="input-label">收件人号码</label>
+<input type="tel" id="phone-input" class="input-field" placeholder="输入手机号码" maxlength="20"/>
+</div>
+<div class="input-group">
+<label class="input-label">短信内容</label>
+<textarea id="msg-input" class="input-field" placeholder="输入短信内容..." maxlength="160" oninput="updateCharCount()"></textarea>
+<div class="char-count"><span id="char-count">0</span>/160</div>
+</div>
+<div class="btn-row">
+<button class="btn btn-primary" onclick="sendSMS()" id="send-btn" style="flex:1">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:middle;margin-right:4px"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+发送短信
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+
+<script>
+var LANG_KEY='cpe_dashboard_lang';
+var DARK_KEY='cpe_dashboard_dark';
+var messages = [];
+
+function getLang(){return localStorage.getItem(LANG_KEY)||'zh'}
+function getDark(){var v=localStorage.getItem(DARK_KEY);if(v===null)return window.matchMedia('(prefers-color-scheme:dark)').matches;return v==='true';}
+function toggleLang(){localStorage.setItem(LANG_KEY,getLang()==='zh'?'en':'zh');location.reload();}
+function toggleDark(){localStorage.setItem(DARK_KEY,String(!getDark()));document.documentElement.classList.toggle('dark',!getDark());updateThemeBtn();}
+function updateThemeBtn(){var btn=document.getElementById('theme-btn');if(btn)btn.innerHTML=getDark()?'☀':'🌙';}
+
+function showStatus(type, msg) {
+  var el = document.getElementById('status');
+  el.className = 'status-msg ' + type;
+  el.textContent = msg;
+  setTimeout(function(){ el.style.display = 'none'; }, 5000);
+}
+
+function switchTab(tab) {
+  document.getElementById('tab-inbox').classList.toggle('active', tab === 'inbox');
+  document.getElementById('tab-compose').classList.toggle('active', tab === 'compose');
+  document.getElementById('inbox-panel').style.display = tab === 'inbox' ? 'block' : 'none';
+  document.getElementById('compose-panel').style.display = tab === 'compose' ? 'block' : 'none';
+}
+
+function updateCharCount() {
+  var input = document.getElementById('msg-input');
+  document.getElementById('char-count').textContent = input.value.length;
+}
+
+function loadMessages() {
+  fetch('/cgi-bin/get_atcommand?atcmd=AT%2BCMGL%3D%22ALL%22')
+    .then(function(r) { return r.text(); })
+    .then(function(t) {
+      messages = [];
+      var lines = t.split('\n').map(function(l){return l.trim()}).filter(Boolean);
+      var current = null;
+      
+      for (var i = 0; i < lines.length; i++) {
+        var line = lines[i];
+        if (line.indexOf('+CMGL:') !== -1) {
+          if (current) messages.push(current);
+          var parts = line.split(',');
+          current = {
+            index: parts[0].replace('+CMGL:', '').trim(),
+            status: parts[1] ? parts[1].replace(/"/g, '').trim() : '',
+            phone: parts[2] ? parts[2].replace(/"/g, '').trim() : '',
+            date: parts[4] ? parts[4].replace(/"/g, '').trim() : '',
+            body: ''
+          };
+        } else if (current) {
+          current.body += (current.body ? '\n' : '') + line;
+        }
+      }
+      if (current) messages.push(current);
+      
+      renderMessages();
+      showStatus('info', '已加载 ' + messages.length + ' 条短信');
+    })
+    .catch(function(e) {
+      showStatus('error', '加载失败: ' + e.message);
+    });
+}
+
+function renderMessages() {
+  var list = document.getElementById('msg-list');
+  var badge = document.getElementById('inbox-badge');
+  
+  if (messages.length === 0) {
+    list.innerHTML = '<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg><p>暂无短信</p></div>';
+    badge.style.display = 'none';
+    return;
+  }
+  
+  badge.textContent = messages.length;
+  badge.style.display = 'inline';
+  
+  var html = '';
+  messages.forEach(function(msg, idx) {
+    html += '<div class="msg-item">';
+    html += '<div class="msg-header">';
+    html += '<span class="msg-phone">' + (msg.phone || '未知号码') + '</span>';
+    html += '<span class="msg-time">' + (msg.date || '') + '</span>';
+    html += '</div>';
+    html += '<div class="msg-body">' + (msg.body || '(空)') + '</div>';
+    html += '<div class="msg-actions">';
+    html += '<button class="msg-btn" onclick="replyTo(\'' + msg.phone + '\')">回复</button>';
+    html += '<button class="msg-btn delete" onclick="deleteMsg(' + msg.index + ')">删除</button>';
+    html += '</div>';
+    html += '</div>';
+  });
+  
+  list.innerHTML = html;
+}
+
+function replyTo(phone) {
+  document.getElementById('phone-input').value = phone;
+  switchTab('compose');
+  document.getElementById('msg-input').focus();
+}
+
+function deleteMsg(index) {
+  if (!confirm('确定删除这条短信？')) return;
+  
+  fetch('/cgi-bin/get_atcommand?atcmd=AT%2BCMGD%3D' + index)
+    .then(function(r) { return r.text(); })
+    .then(function(t) {
+      if (t.indexOf('OK') !== -1) {
+        showStatus('success', '短信已删除');
+        loadMessages();
+      } else {
+        showStatus('error', '删除失败');
+      }
+    })
+    .catch(function(e) { showStatus('error', '删除失败: ' + e.message); });
+}
+
+function deleteAll() {
+  if (!confirm('确定删除所有短信？此操作不可撤销！')) return;
+  
+  var count = 0;
+  var total = messages.length;
+  
+  function deleteNext() {
+    if (count >= total) {
+      showStatus('success', '已删除 ' + count + ' 条短信');
+      loadMessages();
+      return;
+    }
+    
+    var idx = messages[count].index;
+    fetch('/cgi-bin/get_atcommand?atcmd=AT%2BCMGD%3D' + idx)
+      .then(function() { count++; deleteNext(); })
+      .catch(function() { count++; deleteNext(); });
+  }
+  
+  deleteNext();
+}
+
+function sendSMS() {
+  var phone = document.getElementById('phone-input').value.trim();
+  var msg = document.getElementById('msg-input').value.trim();
+  
+  if (!phone) { showStatus('error', '请输入手机号码'); return; }
+  if (!msg) { showStatus('error', '请输入短信内容'); return; }
+  
+  var btn = document.getElementById('send-btn');
+  btn.disabled = true;
+  btn.textContent = '发送中...';
+  
+  var encoded = encodeURIComponent(msg);
+  fetch('/cgi-bin/send_sms?number=' + encodeURIComponent(phone) + '&msg=' + encoded)
+    .then(function(r) { return r.text(); })
+    .then(function(t) {
+      if (t.indexOf('OK') !== -1 || t.indexOf('+CMGS:') !== -1) {
+        showStatus('success', '短信已发送至 ' + phone);
+        document.getElementById('phone-input').value = '';
+        document.getElementById('msg-input').value = '';
+        updateCharCount();
+      } else {
+        showStatus('error', '发送失败: ' + t.substring(0, 100));
+      }
+    })
+    .catch(function(e) { showStatus('error', '发送失败: ' + e.message); })
+    .finally(function() {
+      btn.disabled = false;
+      btn.textContent = '发送短信';
+    });
+}
+
+// Initialize
+loadMessages();
+updateThemeBtn();
+var langCode = document.getElementById('lang-code');
+if (langCode) langCode.textContent = getLang();
+
+window.addEventListener('storage', function(e) {
+  if (e.key === DARK_KEY) { document.documentElement.classList.toggle('dark', e.newValue === 'true'); updateThemeBtn(); }
+  if (e.key === LANG_KEY) location.reload();
+});
+
+// Auto-refresh every 30 seconds
+setInterval(loadMessages, 30000);
+</script>
+</body>
+</html>
