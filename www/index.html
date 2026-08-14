@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+<title>SimpleAdmin</title>
+<script>
+(function(){
+  var k="cpe_dashboard_dark";
+  function d(){var v=localStorage.getItem(k);if(v===null)return window.matchMedia("(prefers-color-scheme: dark)").matches;return v==="true"}
+  if(d())document.documentElement.classList.add("dark");
+})();
+</script>
+<link rel="stylesheet" href="/new/assets/index-CUTK8mfj.css"/>
+<style>
+.time-card{text-align:center;padding:28px 16px 20px}
+.time-greeting{font-size:15px;font-weight:500;color:var(--text2);margin-bottom:8px}
+.time-clock{display:flex;align-items:baseline;justify-content:center;gap:2px}
+.time-digits{font-size:56px;font-weight:200;letter-spacing:-2px;line-height:1;font-variant-numeric:tabular-nums;color:var(--text)}
+.time-sec{font-size:32px;font-weight:300;color:var(--text2)}
+.time-colon{font-size:48px;font-weight:200;color:var(--text2);margin:0 2px}
+.time-colon.blink{animation:colonBlink 1s step-end infinite}
+@keyframes colonBlink{50%{opacity:0}}
+.time-date{font-size:13px;color:var(--text2);margin-top:8px;font-weight:500}
+.status-bar{display:flex;gap:12px;padding:8px 16px;overflow-x:auto;font-size:11px;color:var(--text2);border-bottom:1px solid var(--border);white-space:nowrap;scrollbar-width:none}
+.section{padding:16px 0;border-bottom:1px solid var(--border)}
+.section:last-of-type{border-bottom:none}
+.section-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:12px;padding:0 4px}
+.section-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding:0 4px}
+.speed-row{display:grid;grid-template-columns:1fr 1fr;gap:20px;padding:0 4px}
+.speed-label{display:flex;align-items:center;gap:4px;font-size:10px;font-weight:700;color:var(--text2);text-transform:uppercase;margin-bottom:2px}
+.speed-val{font-size:38px;font-weight:700;letter-spacing:-1.5px;line-height:1}
+.speed-dec{font-size:22px;color:var(--text2)}
+.speed-unit{font-size:12px;color:var(--text2);font-weight:500}
+.wave-wrap{position:relative;height:60px;overflow:hidden;margin-top:12px;pointer-events:none;transform-origin:bottom;transition:transform 1s ease-out}
+.wave-inner{display:flex;height:100%;align-items:flex-end;width:200%;animation:waveFlow 4s linear infinite}
+@keyframes waveFlow{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.wave-inner svg{height:100%;width:50%}
+.sig-badge{font-size:10px;font-weight:700;color:#fff;padding:3px 8px;border-radius:10px}
+.prog-item{margin-bottom:12px;padding:0 4px}
+.prog-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.prog-label{font-size:12px;font-weight:500}
+.prog-val{font-size:11px;color:var(--text2);font-family:monospace}
+.prog-track{height:5px;background:var(--border);border-radius:3px;overflow:hidden}
+.prog-fill{height:100%;border-radius:3px;transition:width 1s ease-out}
+.sig-ring-wrap{display:flex;justify-content:center;margin:16px 0}
+.sig-ring{position:relative;width:100px;height:100px}
+.sig-ring svg{width:100%;height:100%}
+.ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring-num{font-size:24px;font-weight:700}
+.ring-lbl{font-size:9px;color:var(--text2);text-transform:uppercase}
+.sub-title{font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:0.8px;margin:16px 0 10px;padding:0 4px}
+.metric-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 4px}
+.metric{display:flex;align-items:center;gap:8px;padding:8px;background:var(--card);border-radius:10px}
+.metric-icon{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
+.metric-label{font-size:9px;color:var(--text2);font-weight:600;text-transform:uppercase}
+.metric-value{font-size:12px;font-weight:600}
+.ant-row{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px;padding:0 4px}
+.ant-box{text-align:center;padding:8px 4px;background:var(--card);border-radius:8px}
+.ant-lbl{font-size:9px;color:var(--text2);margin-bottom:2px}
+.ant-val{font-size:12px;font-weight:600;font-family:monospace}
+.info-list{padding:0 4px}
+.info-row{display:flex;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)}
+.info-last{border-bottom:none}
+.info-icon{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;color:#fff;margin-right:10px;flex-shrink:0}
+.info-content{flex:1;display:flex;justify-content:space-between;align-items:center;overflow:hidden}
+.info-label{font-size:13px;font-weight:500}
+.info-value{font-size:13px;color:var(--text2);text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.update-time{display:flex;align-items:center;gap:4px;justify-content:center;padding:12px;font-size:10px;color:var(--text2)}
+.footer{text-align:center;padding:20px 0}
+.footer-line{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin-bottom:12px}
+.footer-text{font-size:10px;color:var(--text2);font-family:monospace}
+</style>
+</head>
+<body>
+<div class="app">
+<nav class="navbar">
+<div class="navbar-inner">
+<div class="nav-links">
+<span class="nav-active">首页</span>
+<a href="/network.html" class="nav-link">网络</a>
+<a href="/settings.html" class="nav-link">设置</a>
+<a href="/sms.html" class="nav-link">短信</a>
+<a href="/deviceinfo.html" class="nav-link">设备信息</a>
+<a href="/firmware.html" class="nav-link">固件管理</a>
+</div>
+<div class="nav-actions">
+<button class="nav-btn" onclick="toggleLang()" title="Switch Language"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg><span id="lang-code" style="font-size:10px;font-weight:600">zh</span></button>
+<button class="nav-btn" onclick="toggleDark()" title="Toggle Theme" id="theme-btn">🌙</button>
+</div>
+</div>
+</nav>
+<main style="max-width:640px;margin:0 auto;padding:12px">
+<div id="content"></div>
+</main>
+<footer class="footer"><div class="footer-line"/><p class="footer-text">SimpleAdmin</p></footer>
+</div>
+<script>
+var LANG_KEY='cpe_dashboard_lang',DARK_KEY='cpe_dashboard_dark';
+function getLang(){return localStorage.getItem(LANG_KEY)||'zh'}
+function getDark(){var v=localStorage.getItem(DARK_KEY);if(v===null)return window.matchMedia('(prefers-color-scheme:dark)').matches;return v==='true'}
+function toggleLang(){localStorage.setItem(LANG_KEY,getLang()==='zh'?'en':'zh');location.reload()}
+function toggleDark(){localStorage.setItem(DARK_KEY,String(!getDark()));document.documentElement.classList.toggle('dark',!getDark());updateThemeBtn()}
+function updateThemeBtn(){var b=document.getElementById('theme-btn');if(b)b.innerHTML=getDark()?'☀':'🌙'}
+function getColor(p){return p>70?'var(--green)':p>40?'var(--yellow)':'var(--red)'}
+
+var T={zh:{on:'已连接',off:'离线',dl:'下行速率',ul:'上行速率',mbps:'Mbps',sig:'信号强度',qual:'质量',rsrp:'RSRP',sinr:'SINR',rsrq:'RSRQ',chan:'频段配置',band:'频段',bw:'带宽',arfcn:'ARFCN',pci:'PCI',ant:'天线分集',m:'MAIN',d:'DIV',m1:'MIMO 1',m2:'MIMO 2',net:'网络信息',car:'运营商',mode:'网络模式',dlBw:'下行带宽',ulBw:'上行带宽',pri:'优先级',cell:'基站ID',ip4:'IPv4',ip6:'IPv6',tmp:'温度',sim:'SIM卡',apn:'APN',g:{n:'夜深了',m:'早上好',nn:'中午好',a:'下午好',e:'晚上好'}},
+en:{on:'Online',off:'Offline',dl:'DOWNLOAD',ul:'UPLOAD',mbps:'Mbps',sig:'Signal',qual:'Quality',rsrp:'RSRP',sinr:'SINR',rsrq:'RSRQ',chan:'Channel',band:'Band',bw:'BW',arfcn:'ARFCN',pci:'PCI',ant:'Antenna',m:'MAIN',d:'DIV',m1:'MIMO 1',m2:'MIMO 2',net:'Network',car:'Carrier',mode:'Mode',dlBw:'DL BW',ulBw:'UL BW',pri:'Priority',cell:'Cell ID',ip4:'IPv4',ip6:'IPv6',tmp:'Temp',sim:'SIM',apn:'APN',g:{n:'Good Night',m:'Good Morning',nn:'Good Noon',a:'Good Afternoon',e:'Good Evening'}}};
+
+function render(){
+var lang=getLang(),isDark=getDark(),t=T[lang];
+document.getElementById('lang-code').textContent=lang;
+updateThemeBtn();
+
+fetch('/cgi-bin/get_atcommand?atcmd=AT%2BQSIMSTAT%3F%3B%2BCSQ%3B%2BQTEMP%3B%2BQUIMSLOT%3F%3B%2BQSPN%3B%2BCGCONTRDP%3D1%3B%2BQMAP%3D%22WWANIP%22%3B%2BQENG%3D%22servingcell%22%3B%2BQNWINFO%3B%2BQRSRP%3B%2BQNWCFG%3D%22nr5g_ambr%22%3B%2BQNWCFG%3D%22up%2Fdown%22')
+.then(function(r){return r.text()}).then(function(raw){
+var lines=raw.split('\n').map(function(l){return l.trim()}).filter(Boolean);
+var d={temp:'0',sim:'-',sig:0,on:false,rsrp:'-',sinr:'-',rsrq:'-',band:'-',bw:'-',earfcn:'-',pci:'-',prx:'-',drx:'-',rx2:'-',rx3:'-',car:'-',mccmnc:'-',apn:'-',mode:'-',dlBw:'0',ulBw:'0',pri:'-',cell:'-',ip4:'-',ip6:'-',nd:'0.00',nu:'0.00'};
+lines.forEach(function(l){
+if(l.indexOf('+QTEMP:')>-1){var m=l.match(/"(\d+)"/);if(m&&parseInt(m[1])>0)d.temp=m[1]}
+if(l.indexOf('+QSIMSTAT:')>-1){d.sim=l.indexOf(',1')>-1?'已激活':'未插入'}
+if(l.indexOf('+CSQ:')>-1){d.sig=Math.min(100,Math.round(parseInt(l.split(':')[1])/31*100))}
+if(l.indexOf('+QSPN:')>-1){var p=l.split(',');if(p.length>=4)d.car=(function(h){try{var r="";for(var i=0;i<h.length;i+=4){var c=parseInt(h.substr(i,4),16);if(!isNaN(c))r+=String.fromCharCode(c)}return r||h}catch(e){return h}})(p[1].replace(/"/g,""));if(p.length>=5)d.mccmnc=p[4].replace(/"/g,'')}
+if(l.indexOf('+CGCONTRDP:')>-1){var p=l.split(',');if(p.length>=3)d.apn=p[2].replace(/"/g,'');if(p.length>=4)d.ip4=p[3].replace(/"/g,'')}
+if(l.indexOf('+QENG:')>-1){var p=l.split(',');if(p.length>=15){d.mode=(p[2]||'').replace(/"/g,'')+' '+(p[3]||'').replace(/"/g,'');d.band='N'+(p[10]||'');d.bw=(p[11]||'')+'0 MHz';d.earfcn=p[9]||'-';d.pci=p[7]||'-';d.cell=p[6]||'-';d.rsrp=p[12]||'-';d.rsrq=p[13]||'-';d.sinr=p[14]||'-'}}
+if(l.indexOf('+QRSRP:')>-1){var p=l.split(',');d.prx=(p[0]||'').split(':')[1]||'-';d.drx=p[1]||'-';d.rx2=p[2]||'-';d.rx3=p[3]||'-'}
+if(l.indexOf('+QNWCFG:')>-1&&l.indexOf('nr5g_ambr')>-1){var p=l.split(',');if(p.length>=5){d.dlBw=p[3]||'0';d.ulBw=p[5]||'0';d.pri=p[2]||'-'}}
+if(l.indexOf('+QNWCFG:')>-1&&l.indexOf('up/down')>-1){var p=l.split(',');if(p.length>=3){d.nu=((parseInt(p[1])||0)/1e6).toFixed(2);d.nd=((parseInt(p[2])||0)/1e6).toFixed(2)}}
+});
+d.on=d.ip4&&d.ip4.length>5&&d.ip4!=='-';
+d.lu=new Date().toLocaleString(lang==='zh'?'zh-CN':'en-US');
+
+var rpP=Math.round(Math.min(Math.max((parseFloat(d.rsrp)+140)/80*100,0),100));
+var siP=Math.round(Math.min(Math.max((parseFloat(d.sinr)+10)/45*100,0),100));
+var rqP=Math.round(Math.min(Math.max((parseFloat(d.rsrq)+20)/12*100,0),100));
+var sgP=Math.round((rpP+siP)/2);
+var sgC=getColor(sgP);
+var iL=d.mode.indexOf('LTE')>-1;
+var now=new Date(),h=now.getHours(),g=t.g;
+var gr=h<5?g.n:h<11?g.m:h<13?g.nn:h<18?g.a:g.e;
+var wvO=isDark?0.25:0.12;
+var wvS=Math.min(Math.max(Math.log10(parseFloat(d.nd)+parseFloat(d.nu)+1)*0.6,0.15),1.8);
+
+var html='';
+html+='<div class="time-card"><div class="time-greeting">'+gr+'</div>';
+html+='<div class="time-clock"><span class="time-digits">'+String(h).padStart(2,'0')+'</span><span class="time-colon">:</span><span class="time-digits">'+String(now.getMinutes()).padStart(2,'0')+'</span><span class="time-colon blink">:</span><span class="time-sec">'+String(now.getSeconds()).padStart(2,'0')+'</span></div>';
+html+='<div class="time-date">'+now.toLocaleDateString(lang==='zh'?'zh-CN':'en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'})+'</div></div>';
+html+='<div class="status-bar"><span>'+(d.on?'●':'○')+' '+(d.on?t.on:t.off)+'</span><span>📶 '+d.sig+'%</span><span>🌡 '+d.temp+'°C</span><span>'+(iL?'4G':'5G')+' '+d.mode+'</span><span>🌐 '+d.ip4+'</span></div>';
+html+='<div class="section"><h3 class="section-title">'+(iL?'4G':'5G')+' 蜂窝网络</h3><div class="speed-row">';
+html+='<div><div class="speed-label">⬇ '+t.dl+'</div><div class="speed-val">'+Math.floor(parseFloat(d.nd))+'<span class="speed-dec">.'+(d.nd.split('.')[1]||'00')+'</span> <span class="speed-unit">'+t.mbps+'</span></div></div>';
+html+='<div><div class="speed-label">⬆ '+t.ul+'</div><div class="speed-val">'+Math.floor(parseFloat(d.nu))+'<span class="speed-dec">.'+(d.nu.split('.')[1]||'00')+'</span> <span class="speed-unit">'+t.mbps+'</span></div></div></div>';
+html+='<div class="wave-wrap" style="opacity:'+wvO+';transform:scaleY('+wvS+')"><div class="wave-inner"><svg viewBox="0 0 1440 320" preserveAspectRatio="none"><path fill="var(--blue)" d="M0,224L48,213.3C96,203,192,181,288,181.3C384,181,480,203,576,224C672,245,768,267,864,261.3C960,256,1056,224,1152,197.3C1248,171,1344,149,1392,138.7L1440,128V320H0Z"/></svg><svg viewBox="0 0 1440 320" preserveAspectRatio="none"><path fill="var(--blue)" d="M0,224L48,213.3C96,203,192,181,288,181.3C384,181,480,203,576,224C672,245,768,267,864,261.3C960,256,1056,224,1152,197.3C1248,171,1344,149,1392,138.7L1440,128V320H0Z"/></svg></div></div></div>';
+html+='<div class="section"><div class="section-head"><h3>'+t.sig+'</h3><span class="sig-badge" style="background:'+sgC+'">'+sgP+'%</span></div>';
+html+='<div class="prog-item"><div class="prog-head"><span class="prog-label">'+t.rsrp+'</span><span class="prog-val">'+d.rsrp+' dBm</span></div><div class="prog-track"><div class="prog-fill" style="width:'+rpP+'%;background:'+getColor(rpP)+'"></div></div></div>';
+html+='<div class="prog-item"><div class="prog-head"><span class="prog-label">'+t.sinr+'</span><span class="prog-val">'+d.sinr+' dB</span></div><div class="prog-track"><div class="prog-fill" style="width:'+siP+'%;background:'+getColor(siP)+'"></div></div></div>';
+html+='<div class="prog-item"><div class="prog-head"><span class="prog-label">'+t.rsrq+'</span><span class="prog-val">'+d.rsrq+' dB</span></div><div class="prog-track"><div class="prog-fill" style="width:'+rqP+'%;background:'+getColor(rqP)+'"></div></div></div>';
+html+='<div class="sig-ring-wrap"><div class="sig-ring"><svg viewBox="0 0 128 128"><circle cx="64" cy="64" r="54" fill="none" stroke="var(--ring-bg)" stroke-width="8"/><circle cx="64" cy="64" r="54" fill="none" stroke="'+sgC+'" stroke-width="8" stroke-dasharray="'+sgP*3.39+' 339" stroke-linecap="round" style="transform:rotate(-90deg);transform-origin:center;transition:stroke-dasharray 1s"/></svg><div class="ring-center"><span class="ring-num">'+sgP+'</span><span class="ring-lbl">'+t.qual+'</span></div></div></div>';
+html+='<h4 class="sub-title">'+t.chan+'</h4><div class="metric-row">';
+html+='<div class="metric"><div class="metric-icon" style="background:var(--purple)">📡</div><div><div class="metric-label">'+t.band+'</div><div class="metric-value">'+d.band+'</div></div></div>';
+html+='<div class="metric"><div class="metric-icon" style="background:var(--indigo)">📊</div><div><div class="metric-label">'+t.bw+'</div><div class="metric-value">'+d.bw+'</div></div></div>';
+html+='<div class="metric"><div class="metric-icon" style="background:var(--pink)">📻</div><div><div class="metric-label">'+t.arfcn+'</div><div class="metric-value">'+d.earfcn+'</div></div></div>';
+html+='<div class="metric"><div class="metric-icon" style="background:var(--orange)">🖥</div><div><div class="metric-label">'+t.pci+'</div><div class="metric-value">'+d.pci+'</div></div></div></div>';
+html+='<h4 class="sub-title">'+t.ant+'</h4><div class="ant-row">';
+html+='<div class="ant-box"><div class="ant-lbl">'+t.m+'</div><div class="ant-val">'+d.prx+'</div></div>';
+html+='<div class="ant-box"><div class="ant-lbl">'+t.d+'</div><div class="ant-val">'+d.drx+'</div></div>';
+html+='<div class="ant-box"><div class="ant-lbl">'+t.m1+'</div><div class="ant-val">'+d.rx2+'</div></div>';
+html+='<div class="ant-box"><div class="ant-lbl">'+t.m2+'</div><div class="ant-val">'+d.rx3+'</div></div></div></div>';
+html+='<div class="section"><h3 class="section-title">'+t.net+'</h3><div class="info-list">';
+var rows=[['var(--green)',t.sim,d.sim],['var(--blue)',t.car,d.car],['var(--purple)','MCCMNC',d.mccmnc],['var(--green)',t.mode,d.mode],['var(--teal)',t.apn,d.apn],['var(--cyan)',t.dlBw,d.dlBw+' Mbps'],['var(--cyan-dark)',t.ulBw,d.ulBw+' Mbps'],['var(--violet)',t.pri,d.pri],['var(--red)',t.cell,d.cell],['var(--gray)',t.ip4,d.ip4],['var(--gray-dark)',t.ip6,d.ip6],['var(--teal)',t.tmp,d.temp+' °C']];
+rows.forEach(function(r,i){html+='<div class="info-row'+(i===rows.length-1?' info-last':'')+'"><div class="info-icon" style="background:'+r[0]+'">●</div><div class="info-content"><span class="info-label">'+r[1]+'</span><span class="info-value">'+r[2]+'</span></div></div>'});
+html+='</div></div>';
+html+='<div class="update-time">🕐 '+d.lu+'</div>';
+document.getElementById('content').innerHTML=html;
+}).catch(function(e){console.error(e);});
+}
+
+render();
+setInterval(render,3000);
+updateThemeBtn();
+window.addEventListener('storage',function(e){if(e.key===DARK_KEY){document.documentElement.classList.toggle('dark',e.newValue==='true');updateThemeBtn()}if(e.key===LANG_KEY)location.reload()});
+</script>
+</body>
+</html>
