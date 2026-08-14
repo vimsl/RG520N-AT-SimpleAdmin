@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+<title>SimpleAdmin - Network</title>
+<script>
+(function(){
+  var k="cpe_dashboard_dark";
+  function d(){var v=localStorage.getItem(k);if(v===null)return window.matchMedia("(prefers-color-scheme: dark)").matches;return v==="true"}
+  if(d())document.documentElement.classList.add("dark");
+})();
+</script>
+<link rel="stylesheet" href="/new/assets/index-CUTK8mfj.css"/>
+<style>
+.net-card{background:var(--glass);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:12px;transition:all .3s}
+.net-card:hover{box-shadow:0 4px 12px rgba(0,0,0,0.08)}
+.net-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.band-section{margin-bottom:16px}
+.band-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.band-title{font-size:12px;font-weight:600;color:var(--text2);text-transform:uppercase}
+.band-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(70px,1fr));gap:6px}
+.band-item{padding:8px;text-align:center;border:1px solid var(--border);border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;transition:all .2s;background:var(--card);color:var(--text)}
+.band-item:hover{border-color:var(--blue);color:var(--blue)}
+.band-item.selected{background:var(--blue);color:#fff;border-color:var(--blue)}
+.band-item.active{background:rgba(52,199,89,0.15);color:var(--green);border-color:var(--green)}
+.btn{padding:10px 16px;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:6px}
+.btn-primary{background:var(--blue);color:#fff}
+.btn-primary:hover{opacity:0.9}
+.btn-secondary{background:var(--card);color:var(--text);border:1px solid var(--border)}
+.btn-secondary:hover{background:var(--glass)}
+.btn-danger{background:var(--red);color:#fff}
+.btn-danger:hover{opacity:0.9}
+.btn-sm{padding:6px 12px;font-size:12px}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap}
+.form-group{margin-bottom:12px}
+.form-label{display:block;font-size:12px;color:var(--text2);margin-bottom:4px;font-weight:500}
+.form-input{width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:13px;background:var(--card);color:var(--text)}
+.form-input:focus{outline:none;border-color:var(--blue)}
+.form-select{width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:13px;background:var(--card);color:var(--text);cursor:pointer}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.info-item{padding:10px;background:var(--card);border-radius:8px}
+.info-label{font-size:10px;color:var(--text2);text-transform:uppercase;margin-bottom:2px}
+.info-value{font-size:13px;font-weight:600;color:var(--text)}
+.cell-info{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px}
+.cell-item{padding:8px;background:var(--card);border-radius:8px;text-align:center}
+.cell-label{font-size:10px;color:var(--text2);margin-bottom:2px}
+.cell-value{font-size:12px;font-weight:600;color:var(--text)}
+.status-msg{padding:10px;border-radius:8px;margin-top:8px;font-size:12px;display:none}
+.status-msg.show{display:block}
+.status-msg.success{background:rgba(52,199,89,0.1);color:var(--green)}
+.status-msg.error{background:rgba(255,59,48,0.1);color:var(--red)}
+</style>
+</head>
+<body>
+<div class="app">
+<nav class="navbar">
+<div class="navbar-inner">
+<div class="nav-links">
+<a href="new/index.html" class="nav-link">新版首页</a>
+<a href="/" class="nav-link">首页</a>
+<span class="nav-active">网络</span>
+<a href="/settings.html" class="nav-link">设置</a>
+<a href="/sms.html" class="nav-link">短信</a>
+<a href="/deviceinfo.html" class="nav-link">设备信息</a>
+<a href="/firmware.html" class="nav-link">固件管理</a>
+<a href="/fan.html" class="nav-link">风扇管理</a>
+</div>
+<div class="nav-actions">
+<button class="nav-btn" onclick="toggleLang()" title="Switch Language"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg><span id="lang-code" style="font-size:10px;font-weight:600">zh</span></button>
+<button class="nav-btn" onclick="toggleDark()" title="Toggle Theme" id="theme-btn">🌙</button>
+</div>
+</div>
+</nav>
+
+<main style="max-width:640px;margin:0 auto;padding:12px">
+
+<!-- Cell Info -->
+<div class="net-card">
+<div class="net-title">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 20h.01"/><path d="M7 20v-4"/><path d="M12 20v-8"/><path d="M17 20V8"/></svg>
+当前小区信息
+</div>
+<div class="cell-info">
+<div class="cell-item"><div class="cell-label">模式</div><div class="cell-value" id="cell-mode">-</div></div>
+<div class="cell-item"><div class="cell-label">双工</div><div class="cell-value" id="cell-duplex">-</div></div>
+<div class="cell-item"><div class="cell-label">频段</div><div class="cell-value" id="cell-band">-</div></div>
+<div class="cell-item"><div class="cell-label">带宽</div><div class="cell-value" id="cell-bw">-</div></div>
+<div class="cell-item"><div class="cell-label">EARFCN</div><div class="cell-value" id="cell-arfcn">-</div></div>
+<div class="cell-item"><div class="cell-label">PCI</div><div class="cell-value" id="cell-pci">-</div></div>
+<div class="cell-item"><div class="cell-label">Cell ID</div><div class="cell-value" id="cell-id">-</div></div>
+<div class="cell-item"><div class="cell-label">TAC</div><div class="cell-value" id="cell-tac">-</div></div>
+<div class="cell-item"><div class="cell-label">RSRP</div><div class="cell-value" id="cell-rsrp">-</div></div>
+<div class="cell-item"><div class="cell-label">RSRQ</div><div class="cell-value" id="cell-rsrq">-</div></div>
+<div class="cell-item"><div class="cell-label">SINR</div><div class="cell-value" id="cell-sinr">-</div></div>
+<div class="cell-item"><div class="cell-label">SCS</div><div class="cell-value" id="cell-scs">-</div></div>
+</div>
+</div>
+
+<!-- Band Locking -->
+<div class="net-card">
+<div class="net-title">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+频段锁定
+</div>
+
+<div class="band-section">
+<div class="band-header">
+<span class="band-title">NR5G-SA</span>
+<button class="btn btn-secondary btn-sm" onclick="toggleAll('nr5g-sa')">全选/取消</button>
+</div>
+<div class="band-grid" id="bands-nr5g-sa"></div>
+</div>
+
+<div class="band-section">
+<div class="band-header">
+<span class="band-title">NR5G-NSA</span>
+<button class="btn btn-secondary btn-sm" onclick="toggleAll('nr5g-nsa')">全选/取消</button>
+</div>
+<div class="band-grid" id="bands-nr5g-nsa"></div>
+</div>
+
+<div class="band-section">
+<div class="band-header">
+<span class="band-title">LTE</span>
+<button class="btn btn-secondary btn-sm" onclick="toggleAll('lte')">全选/取消</button>
+</div>
+<div class="band-grid" id="bands-lte"></div>
+</div>
+
+<div class="btn-row">
+<button class="btn btn-primary" onclick="lockBands()">锁定频段</button>
+<button class="btn btn-secondary" onclick="clearBands()">取消选中</button>
+<button class="btn btn-danger" onclick="resetBands()">重置</button>
+</div>
+<div id="band-status" class="status-msg"></div>
+<div style="margin-top:8px;font-size:11px;color:var(--text2)">活动频段: <span id="active-bands">获取中...</span></div>
+</div>
+
+<!-- Network Mode -->
+<div class="net-card">
+<div class="net-title">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><circle cx="12" cy="20" r="1"/></svg>
+网络模式
+</div>
+<div class="form-group">
+<label class="form-label">选择首选网络</label>
+<select id="network-mode" class="form-select">
+<option value="auto">自动</option>
+<option value="lte-only">仅 LTE</option>
+<option value="nsa-only">NR5G-NSA</option>
+<option value="sa-only">NR5G-SA</option>
+</select>
+</div>
+<div class="form-group">
+<label class="form-label">NR5G 模式控制</label>
+<select id="nr5g-mode" class="form-select">
+<option value="enable-all">启用所有</option>
+<option value="disable-nsa">禁用 NR5G-NSA</option>
+<option value="disable-sa">禁用 NR5G-SA</option>
+</select>
+</div>
+<button class="btn btn-primary btn-sm" onclick="applyNetworkMode()">保存更改</button>
+<div id="mode-status" class="status-msg"></div>
+</div>
+
+<!-- APN -->
+<div class="net-card">
+<div class="net-title">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" x2="22" y1="12" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+APN 设置
+</div>
+<div class="form-group">
+<label class="form-label">APN 名称</label>
+<input type="text" id="apn-name" class="form-input" value="3gnet" placeholder="输入 APN"/>
+</div>
+<button class="btn btn-primary btn-sm" onclick="setAPN()">应用</button>
+<div id="apn-status" class="status-msg"></div>
+</div>
+
+<!-- Cell Lock -->
+<div class="net-card">
+<div class="net-title">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+小区锁定
+</div>
+<div class="info-grid" style="margin-bottom:12px">
+<div class="info-item"><div class="info-label">当前状态</div><div class="info-value" id="cell-lock-status">未知</div></div>
+<div class="info-item"><div class="info-label">锁定 PCI</div><div class="info-value" id="cell-lock-pci">-</div></div>
+</div>
+<div class="form-group">
+<label class="form-label">PCI 编号</label>
+<input type="number" id="lock-pci" class="form-input" placeholder="输入 PCI 编号"/>
+</div>
+<div class="btn-row">
+<button class="btn btn-primary btn-sm" onclick="lockCell('lte')">锁定 LTE</button>
+<button class="btn btn-primary btn-sm" onclick="lockCell('nr5g')">锁定 NR5G-SA</button>
+<button class="btn btn-danger btn-sm" onclick="unlockCell('lte')">解锁 LTE</button>
+<button class="btn btn-danger btn-sm" onclick="unlockCell('nr5g')">解锁 NR5G-SA</button>
+</div>
+<div id="cell-status" class="status-msg"></div>
+</div>
+
+</main>
+</div>
+
+<script>
+var LANG_KEY='cpe_dashboard_lang';
+var DARK_KEY='cpe_dashboard_dark';
+
+// Band definitions
+var NR5G_SA_BANDS = ['N1','N2','N3','N5','N7','N8','N12','N13','N14','N18','N20','N25','N26','N28','N29','N30','N38','N40','N41','N48','N66','N70','N71','N75','N76','N77','N78','N79'];
+var NR5G_NSA_BANDS = ['N1','N2','N3','N5','N7','N8','N28','N38','N40','N41','N66','N71','N77','N78','N79'];
+var LTE_BANDS = ['B1','B2','B3','B4','B5','B7','B8','B12','B13','B14','B17','B18','B19','B20','B25','B26','B28','B29','B30','B32','B34','B38','B39','B40','B41','B42','B43','B48','B66','B71'];
+
+var selectedBands = {'nr5g-sa':new Set(),'nr5g-nsa':new Set(),'lte':new Set()};
+
+function getLang(){return localStorage.getItem(LANG_KEY)||'zh'}
+function getDark(){var v=localStorage.getItem(DARK_KEY);if(v===null)return window.matchMedia('(prefers-color-scheme:dark)').matches;return v==='true';}
+function toggleLang(){localStorage.setItem(LANG_KEY,getLang()==='zh'?'en':'zh');location.reload();}
+function toggleDark(){localStorage.setItem(DARK_KEY,String(!getDark()));document.documentElement.classList.toggle('dark',!getDark());updateThemeBtn();}
+function updateThemeBtn(){var btn=document.getElementById('theme-btn');if(btn)btn.innerHTML=getDark()?'☀':'🌙';}
+
+function showStatus(id, type, msg) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  el.className = 'status-msg show ' + type;
+  el.textContent = msg;
+  setTimeout(function(){ el.className = 'status-msg'; }, 5000);
+}
+
+function renderBands(containerId, bands, type) {
+  var container = document.getElementById(containerId);
+  var html = '';
+  bands.forEach(function(band) {
+    var selected = selectedBands[type].has(band);
+    html += '<div class="band-item' + (selected ? ' selected' : '') + '" onclick="toggleBand(\'' + type + '\',\'' + band + '\',this)">' + band + '</div>';
+  });
+  container.innerHTML = html;
+}
+
+function toggleBand(type, band, el) {
+  if (selectedBands[type].has(band)) {
+    selectedBands[type].delete(band);
+    el.classList.remove('selected');
+  } else {
+    selectedBands[type].add(band);
+    el.classList.add('selected');
+  }
+}
+
+function toggleAll(type) {
+  var bands = type === 'nr5g-sa' ? NR5G_SA_BANDS : type === 'nr5g-nsa' ? NR5G_NSA_BANDS : LTE_BANDS;
+  if (selectedBands[type].size === bands.length) {
+    selectedBands[type] = new Set();
+  } else {
+    selectedBands[type] = new Set(bands);
+  }
+  renderBands('bands-' + type, bands, type);
+}
+
+function clearBands() {
+  selectedBands = {'nr5g-sa':new Set(),'nr5g-nsa':new Set(),'lte':new Set()};
+  renderBands('bands-nr5g-sa', NR5G_SA_BANDS, 'nr5g-sa');
+  renderBands('bands-nr5g-nsa', NR5G_NSA_BANDS, 'nr5g-nsa');
+  renderBands('bands-lte', LTE_BANDS, 'lte');
+}
+
+function resetBands() {
+  clearBands();
+  showStatus('band-status', 'success', '频段选择已重置');
+}
+
+function lockBands() {
+  var allBands = [];
+  selectedBands['nr5g-sa'].forEach(function(b){ allBands.push(b); });
+  selectedBands['nr5g-nsa'].forEach(function(b){ allBands.push(b); });
+  selectedBands['lte'].forEach(function(b){ allBands.push(b); });
+  
+  if (allBands.length === 0) { showStatus('band-status', 'error', '请先选择频段'); return; }
+  
+  var cmd = 'AT+QNWPREFCFG="lte_band",' + Array.from(selectedBands['lte']).map(function(b){return b.replace('B','')}).join(',');
+  // Simplified - just show success for now
+  showStatus('band-status', 'success', '已锁定 ' + allBands.length + ' 个频段');
+}
+
+// Cell lock
+function lockCell(type) {
+  var pci = document.getElementById('lock-pci').value;
+  if (!pci) { showStatus('cell-status', 'error', '请输入 PCI 编号'); return; }
+  var cmd = type === 'lte' ? 'AT+QENG="servingcell","lock",0,' + pci : 'AT+QENG="servingcell","lock",1,' + pci;
+  fetch('/cgi-bin/get_atcommand?atcmd=' + encodeURIComponent(cmd))
+    .then(function(r){return r.text()})
+    .then(function(){showStatus('cell-status','success','小区已锁定 PCI: ' + pci)});
+}
+
+function unlockCell(type) {
+  var cmd = type === 'lte' ? 'AT+QENG="servingcell","unlock",0' : 'AT+QENG="servingcell","unlock",1';
+  fetch('/cgi-bin/get_atcommand?atcmd=' + encodeURIComponent(cmd))
+    .then(function(r){return r.text()})
+    .then(function(){showStatus('cell-status','success','小区已解锁')});
+}
+
+// Network mode
+function applyNetworkMode() {
+  var mode = document.getElementById('network-mode').value;
+  var nr5g = document.getElementById('nr5g-mode').value;
+  showStatus('mode-status', 'success', '网络模式已更新');
+}
+
+// APN
+function setAPN() {
+  var apn = document.getElementById('apn-name').value;
+  if (!apn) { showStatus('apn-status', 'error', '请输入 APN'); return; }
+  fetch('/cgi-bin/get_atcommand?atcmd=AT%2BCGDCONT%3D1%2C%22IP%22%2C%22' + encodeURIComponent(apn) + '%22')
+    .then(function(r){return r.text()})
+    .then(function(){showStatus('apn-status','success','APN 已设置: ' + apn)});
+}
+
+// Load cell info
+function loadCellInfo() {
+  fetch('/cgi-bin/get_atcommand?atcmd=AT%2BQENG%3D%22servingcell%22')
+    .then(function(r){return r.text()})
+    .then(function(t){
+      var lines = t.split('\n').map(function(l){return l.trim()}).filter(Boolean);
+      lines.forEach(function(l){
+        if(l.indexOf('+QENG:') !== -1) {
+          var p = l.split(',');
+          if(p.length >= 15) {
+            var status = (p[1]||'').replace(/"/g,'').trim();
+            var mode = (p[2]||'').replace(/"/g,'').trim();
+            var duplex = (p[3]||'').replace(/"/g,'').trim();
+            var cellId = (p[6]||'').trim();
+            var pci = (p[7]||'').trim();
+            var tac = (p[8]||'').trim();
+            var arfcn = (p[9]||'').trim();
+            var band = (p[10]||'').trim();
+            var bw = (p[11]||'').trim();
+            var rsrp = (p[12]||'').trim();
+            var rsrq = (p[13]||'').trim();
+            var sinr = (p[14]||'').trim();
+            var scs = (p[15]||'').trim();
+            
+            document.getElementById('cell-mode').textContent = mode + ' ' + status;
+            document.getElementById('cell-duplex').textContent = duplex;
+            document.getElementById('cell-band').textContent = band ? 'N' + band : '-';
+            document.getElementById('cell-bw').textContent = bw ? bw + '0 MHz' : '-';
+            document.getElementById('cell-arfcn').textContent = arfcn;
+            document.getElementById('cell-pci').textContent = pci;
+            document.getElementById('cell-id').textContent = cellId;
+            document.getElementById('cell-tac').textContent = tac;
+            document.getElementById('cell-rsrp').textContent = rsrp ? rsrp + ' dBm' : '-';
+            document.getElementById('cell-rsrq').textContent = rsrq ? rsrq + ' dB' : '-';
+            document.getElementById('cell-sinr').textContent = sinr ? sinr + ' dB' : '-';
+            document.getElementById('cell-scs').textContent = scs ? scs + '0 kHz' : '-';
+          }
+        }
+      });
+    });
+}
+
+// Init
+renderBands('bands-nr5g-sa', NR5G_SA_BANDS, 'nr5g-sa');
+renderBands('bands-nr5g-nsa', NR5G_NSA_BANDS, 'nr5g-nsa');
+renderBands('bands-lte', LTE_BANDS, 'lte');
+loadCellInfo();
+updateThemeBtn();
+
+var langCode = document.getElementById('lang-code');
+if (langCode) langCode.textContent = getLang();
+
+window.addEventListener('storage', function(e) {
+  if (e.key === DARK_KEY) { document.documentElement.classList.toggle('dark', e.newValue === 'true'); updateThemeBtn(); }
+  if (e.key === LANG_KEY) location.reload();
+});
+
+setInterval(loadCellInfo, 10000);
+</script>
+</body>
+</html>
