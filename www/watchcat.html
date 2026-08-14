@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh" data-bs-theme="dark">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Simple Admin - Watchdog</title>
+<link rel="stylesheet" href="css/styles.css"/>
+<link rel="stylesheet" href="css/bootstrap.min.css"/>
+<script src="js/bootstrap.bundle.min.js"></script>
+<script src="js/alpinejs.min.js" defer></script>
+<style>
+.status-card{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);border-radius:12px;padding:20px;color:white;box-shadow:0 4px 15px rgba(0,0,0,0.2)}
+.status-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.status-item{background:rgba(255,255,255,0.1);padding:10px;border-radius:8px}
+.status-label{font-size:12px;opacity:0.8}
+.status-value{font-size:16px;font-weight:bold}
+.log-box{margin-top:10px;padding:10px;background:rgba(0,0,0,0.2);border-radius:8px;font-family:monospace;font-size:12px;max-height:100px;overflow-y:auto}
+</style>
+</head>
+<body>
+<main>
+<div class="container my-4">
+<nav class="navbar navbar-expand-lg mt-2">
+<div class="container-fluid">
+<a class="navbar-brand" href="/"><span class="mb-0 h4">Simple Admin</span></a>
+<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText">
+<span class="navbar-toggler-icon"></span>
+</button>
+<div class="collapse navbar-collapse" id="navbarText">
+<ul class="navbar-nav me-auto mb-2 ml-4 mb-lg-0">
+<li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+<li class="nav-item"><a class="nav-link" href="/network.html">Simple Network</a></li>
+<li class="nav-item"><a class="nav-link" href="/scanner.html">Simple Scan</a></li>
+<li class="nav-item"><a class="nav-link" href="/settings.html">Simple Settings</a></li>
+<li class="nav-item"><a class="nav-link" href="/sms.html">SMS</a></li>
+<li class="nav-item"><a class="nav-link" href="/console">Console</a></li>
+<li class="nav-item"><a class="nav-link" href="/deviceinfo.html">Device Information</a></li>
+</ul>
+<span class="navbar-text">
+<button class="btn btn-link text-reset" id="darkModeToggle">Dark Mode</button>
+</span>
+</div>
+</div>
+</nav>
+
+<div class="row mt-3 mb-4">
+<div class="col">
+<div class="card">
+<div class="card-body">
+<h5 class="card-title">Simple Watchcat</h5>
+<div class="status-card" id="status-display">
+<div style="display:flex;align-items:center;gap:10px;margin-bottom:15px;">
+<div id="status-dot" style="width:12px;height:12px;border-radius:50%;background:#ef4444;box-shadow:0 0 10px #ef4444;"></div>
+<h3 style="margin:0;font-size:18px;">看门狗状态</h3>
+</div>
+<div class="status-grid">
+<div class="status-item">
+<div class="status-label">状态</div>
+<div class="status-value" id="wd-active">加载中...</div>
+</div>
+<div class="status-item">
+<div class="status-label">进程ID</div>
+<div class="status-value" id="wd-pid">-</div>
+</div>
+<div class="status-item">
+<div class="status-label">监控IP</div>
+<div class="status-value" id="wd-ip">-</div>
+</div>
+<div class="status-item">
+<div class="status-label">失败次数</div>
+<div class="status-value" id="wd-fails">-</div>
+</div>
+</div>
+<div class="log-box" id="wd-log">加载中...</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="row mt-3">
+<div class="col">
+<div class="card">
+<div class="card-body">
+<h5 class="card-title">配置看门狗</h5>
+<form id="watchdog-form">
+<div class="mb-3">
+<label class="form-label">监控 IP 地址</label>
+<input type="text" class="form-control" id="track-ip" value="8.8.8.8" placeholder="8.8.8.8">
+</div>
+<div class="mb-3">
+<label class="form-label">Ping 超时 (秒)</label>
+<input type="number" class="form-control" id="ping-timeout" value="5" min="1" max="30">
+</div>
+<div class="mb-3">
+<label class="form-label">失败次数阈值</label>
+<input type="number" class="form-control" id="fail-count" value="3" min="1" max="10">
+</div>
+<button type="button" class="btn btn-primary" onclick="enableWatchdog()">启用看门狗</button>
+<button type="button" class="btn btn-danger ms-2" onclick="disableWatchdog()">禁用看门狗</button>
+</form>
+<div id="config-result" class="mt-3"></div>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+</main>
+
+<script>
+function updateStatus() {
+  fetch("/cgi-bin/get_watchcat_status")
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      var active = data.active;
+      document.getElementById("wd-active").innerHTML = active ? "✅ 运行中" : "❌ 已停止";
+      document.getElementById("wd-pid").textContent = data.pid || "-";
+      document.getElementById("wd-ip").textContent = data.track_ip || "-";
+      document.getElementById("wd-fails").textContent = data.fail_count || 0;
+      document.getElementById("wd-log").textContent = data.last_log || "无日志";
+      
+      var dot = document.getElementById("status-dot");
+      if (active) {
+        dot.style.background = "#4ade80";
+        dot.style.boxShadow = "0 0 10px #4ade80";
+      } else {
+        dot.style.background = "#ef4444";
+        dot.style.boxShadow = "0 0 10px #ef4444";
+      }
+    })
+    .catch(function(e) {
+      document.getElementById("wd-active").innerHTML = "❌ 错误";
+      document.getElementById("wd-log").textContent = e.message;
+    });
+}
+
+function enableWatchdog() {
+  var ip = document.getElementById("track-ip").value;
+  var timeout = document.getElementById("ping-timeout").value;
+  var fails = document.getElementById("fail-count").value;
+  
+  fetch("/cgi-bin/watchcat_maker?WATCHCAT_ENABLED=enable&TRACK_IP=" + ip + "&PING_TIMEOUT=" + timeout + "&PING_FAILURE_COUNT=" + fails)
+    .then(function(r) { return r.text(); })
+    .then(function(t) {
+      document.getElementById("config-result").innerHTML = '<div class="alert alert-success">' + t + '</div>';
+      updateStatus();
+    })
+    .catch(function(e) {
+      document.getElementById("config-result").innerHTML = '<div class="alert alert-danger">错误: ' + e.message + '</div>';
+    });
+}
+
+function disableWatchdog() {
+  fetch("/cgi-bin/watchcat_maker?WATCHCAT_ENABLED=disable")
+    .then(function(r) { return r.text(); })
+    .then(function(t) {
+      document.getElementById("config-result").innerHTML = '<div class="alert alert-warning">' + t + '</div>';
+      updateStatus();
+    })
+    .catch(function(e) {
+      document.getElementById("config-result").innerHTML = '<div class="alert alert-danger">错误: ' + e.message + '</div>';
+    });
+}
+
+// Update status every 3 seconds
+updateStatus();
+setInterval(updateStatus, 3000);
+</script>
+</body>
+</html>
