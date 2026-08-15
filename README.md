@@ -1,4 +1,4 @@
-# RG520N-AT SimpleAdmin Firmware
+﻿# RG520N-AT SimpleAdmin Firmware
 
 Quectel RG520N-AT 5G CPE 的重构版 SimpleAdmin 管理界面，基于原厂固件深度优化。
 
@@ -13,10 +13,29 @@ Quectel RG520N-AT 5G CPE 的重构版 SimpleAdmin 管理界面，基于原厂固
 | 网络 | 5G NR SA/NSA, LTE |
 | 频段 | N78, N28 |
 
+## 更新日志
+
+### v1.1 - 首页 UI 重构（2026-08-16）
+- **毛玻璃卡片设计**：首页全面采用 backdrop-filter 毛玻璃效果，暗黑/亮色双模式
+- **信号+频段+天线一体化布局**：将时间/问候卡片嵌入信号强度区块，频段配置和天线分集无缝衔接，形成层次清晰的视觉结构
+- **时间/问候卡片**：在信号区块内独立毛玻璃卡片，带轻微阴影，与下方内容区分层次
+- **实时数据刷新**：首页每10秒自动刷新 AT 指令数据，信号、速率、频段、网络信息实时更新
+- **天气集成**：支持自动定位或手动设置城市，基于 Open-Meteo API 获取实时天气
+- **响应式布局**：桌面端 max-width 640px 居中，移动端自适应
+- **导航优化**：所有页面统一顶部导航栏，中英文切换、暗黑模式切换
+- **数据安全保障**：所有 AT 指令返回值通过 esc() 函数转义，防止 XSS 注入
+- **首页冷启动保护**：首次打开网络页等子页面时自动跳转首页
+
+### v1.0.0 - 初始版本（2026-08-14）
+- 首页、设备信息、网络、设置、短信、固件管理、看门狗、救砖等页面
+- FPLMN 黑名单清除
+- 内存/swap 优化
+- 救砖模式
+
 ## 功能特性
 
 ### 已重构的页面
-- **首页** - 实时时钟、状态栏、速率显示（带波浪动画）、信号强度（圆环图+进度条）、频段配置、天线分集、网络信息
+- **首页** - 毛玻璃卡片、实时时钟、天气、信号强度、速率显示、频段配置、天线分集、网络信息
 - **设备信息** - IMEI/IMSI/ICCID、系统信息、内存/存储使用率、快捷操作
 - **网络** - 小区信息、频段锁定（NR5G-SA/NSA/LTE）、网络模式、APN、小区锁定
 - **设置** - AT 终端、一键工具、IP 透传、DMZ、LAN IP、TTL
@@ -31,33 +50,25 @@ Quectel RG520N-AT 5G CPE 的重构版 SimpleAdmin 管理界面，基于原厂固
 - **Swap 优化** - swappiness=10, vfs_cache_pressure=50
 
 ### 技术栈
-- **前端**: React 18 + Vite + Lucide React 图标
+- **前端**: 原生 HTML/CSS/JS + Lucide 图标
 - **后端**: Lighttpd + Shell CGI
 - **样式**: 毛玻璃卡片、暗黑/白天模式、中英文切换
 - **通信**: AT 命令 via socat 桥接
 
 ## 文件结构
 
-```
+`
 www/
-├── index.html              # 主首页（纯 JS 版本）
+├── index.html              # 主首页（v8 毛玻璃版）
 ├── deviceinfo.html         # 设备信息
 ├── network.html            # 网络设置
 ├── settings.html           # 设置
 ├── sms.html                # 短信
 ├── firmware.html           # 固件管理
-├── fan.html                # 风扇管理（仅快捷入口）
 ├── watchcat.html           # 看门狗
 ├── recovery.html           # 救砖页面
-├── new/                    # React 版首页
-│   ├── index.html
-│   └── assets/
-│       ├── index-*.js      # React 构建产物
-│       └── index-*.css     # 样式
-├── css/
-│   ├── cpe-theme.css       # 主题样式
-│   └── styles.css          # 基础样式
 ├── js/
+│   ├── i18n.js             # 国际化 + XSS 转义
 │   ├── navbar.js           # 导航栏组件
 │   └── theme.js            # 主题切换
 └── cgi-bin/
@@ -70,13 +81,22 @@ www/
     ├── watchcat_maker      # 看门狗配置
     ├── send_sms            # 发送短信
     ├── set_ttl             # TTL 设置
+    ├── set_lan_ip          # LAN IP 设置
     └── upload_file         # 文件上传
 
 scripts/
 ├── watchdog.sh             # 网络看门狗
 ├── clear_fplmn.sh          # FPLMN 黑名单清除
 └── brick_recovery.sh       # 救砖模式监控
-```
+`
+
+## 安装
+
+1. 通过 Telnet 或 SSH 连接设备
+2. 将 www/ 目录上传到 /usrdata/simpleadmin/www/
+3. 将 scripts/ 目录上传到 /usrdata/simpleadmin/scripts/
+4. 设置执行权限：chmod +x /usrdata/simpleadmin/scripts/*.sh
+5. 重启设备使修改生效
 
 ## 上游引用
 
@@ -86,70 +106,4 @@ scripts/
 |------|------|------|
 | SimpleAdmin | [iamromulan/quectel-rgmii-toolkit](https://github.com/iamromulan/quectel-rgmii-toolkit) | 原始 SimpleAdmin 管理界面 |
 | Lighttpd | [lighttpd/lighttpd](https://github.com/lighttpd/lighttpd) | Web 服务器 |
-| Alpine.js | [alpinejs/alpinejs](https://github.com/alpinejs/alpinejs) | 旧版页面交互框架 |
-| Bootstrap | [twbs/bootstrap](https://github.com/twbs/bootstrap) | 旧版页面 UI 框架 |
-| React | [facebook/react](https://github.com/facebook/react) | 新版首页 UI 框架 |
 | Lucide | [lucide-icons/lucide](https://github.com/lucide-icons/lucide) | 图标库 |
-| Vite | [vitejs/vite](https://github.com/vitejs/vite) | 前端构建工具 |
-
-## 安装
-
-1. 通过 Telnet 或 SSH 连接设备
-2. 将 `www/` 目录上传到 `/usrdata/simpleadmin/www/`
-3. 将 `scripts/` 目录上传到 `/usrdata/simpleadmin/scripts/`
-4. 设置执行权限：`chmod +x /usrdata/simpleadmin/scripts/*.sh`
-5. 配置 systemd 服务（见下方）
-
-### systemd 服务配置
-
-```bash
-# 网络看门狗
-cat > /etc/systemd/system/modem_watchdog_v3.service << 'EOF'
-[Unit]
-Description=Modem Watchdog v3
-After=network.target
-
-[Service]
-Type=simple
-ExecStart=/usrdata/simpleadmin/scripts/watchdog.sh
-Restart=always
-
-[Install]
-WantedBy=multi-user.target
-EOF
-
-# FPLMN 清除
-cat > /etc/systemd/system/clear-fplmn.service << 'EOF'
-[Unit]
-Description=Clear FPLMN blacklist
-After=network.target
-
-[Service]
-Type=oneshot
-ExecStart=/usrdata/simpleadmin/scripts/clear_fplmn.sh
-RemainAfterExit=yes
-
-[Install]
-WantedBy=multi-user.target
-EOF
-
-# 内存优化
-cat > /etc/sysctl.d/99-memory-optimize.conf << 'EOF'
-vm.swappiness = 10
-vm.vfs_cache_pressure = 50
-EOF
-
-systemctl daemon-reload
-systemctl enable modem_watchdog_v3.service
-systemctl enable clear-fplmn.service
-```
-
-## 访问地址
-
-- 主页: `https://192.168.225.1/`
-- React 版: `https://192.168.225.1/new/index.html`
-- 救砖: `https://192.168.225.1/recovery.html`
-
-## 许可证
-
-基于 [iamromulan](https://github.com/iamromulan) 的 SimpleAdmin 项目，遵循原始许可。
