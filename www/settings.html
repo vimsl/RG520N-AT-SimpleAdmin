@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+<title>SimpleAdmin - Settings</title>
+<script>
+(function(){
+  var k="cpe_dashboard_dark";
+  function d(){var v=localStorage.getItem(k);if(v===null)return window.matchMedia("(prefers-color-scheme: dark)").matches;return v==="true"}
+  if(d())document.documentElement.classList.add("dark");
+})();
+</script>
+<link rel="stylesheet" href="/new/assets/index-CUTK8mfj.css"/>
+<style>
+.settings-card{background:var(--glass);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:12px;transition:all .3s}
+.settings-card:hover{box-shadow:0 4px 12px rgba(0,0,0,0.08)}
+.settings-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.terminal-box{background:#1e1e1e;border-radius:10px;padding:12px;font-family:'Cascadia Code','Fira Code',monospace;font-size:12px;color:#d4d4d4;max-height:300px;overflow-y:auto;white-space:pre-wrap;word-break:break-all;line-height:1.6}
+.terminal-input{display:flex;gap:8px;margin-top:8px}
+.terminal-input input{flex:1;padding:10px;border:1px solid var(--border);border-radius:8px;font-family:monospace;font-size:13px;background:var(--card);color:var(--text)}
+.terminal-input input:focus{outline:none;border-color:var(--blue)}
+.btn{padding:10px 16px;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:6px}
+.btn-primary{background:var(--blue);color:#fff}
+.btn-primary:hover{opacity:0.9}
+.btn-danger{background:var(--red);color:#fff}
+.btn-danger:hover{opacity:0.9}
+.btn-secondary{background:var(--card);color:var(--text);border:1px solid var(--border)}
+.btn-secondary:hover{background:var(--glass)}
+.btn-sm{padding:6px 12px;font-size:12px}
+.tool-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tool-item{display:flex;align-items:center;gap:10px;padding:12px;background:var(--card);border:1px solid var(--border);border-radius:10px;cursor:pointer;transition:all .2s}
+.tool-item:hover{background:var(--glass);transform:translateY(-1px)}
+.tool-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
+.tool-text{font-size:12px;font-weight:500}
+.tool-desc{font-size:10px;color:var(--text2);margin-top:2px}
+.form-group{margin-bottom:12px}
+.form-label{display:block;font-size:12px;color:var(--text2);margin-bottom:4px;font-weight:500}
+.form-input{width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:13px;background:var(--card);color:var(--text)}
+.form-input:focus{outline:none;border-color:var(--blue)}
+.form-select{width:100%;padding:10px;border:1px solid var(--border);border-radius:8px;font-size:13px;background:var(--card);color:var(--text);cursor:pointer}
+.form-row{display:flex;gap:8px;align-items:center}
+.form-row .form-input{flex:1}
+.status-badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600}
+.status-on{background:rgba(52,199,89,0.15);color:var(--green)}
+.status-off{background:rgba(255,59,48,0.15);color:var(--red)}
+.status-msg{padding:10px;border-radius:8px;margin-top:8px;font-size:12px;display:none}
+.status-msg.show{display:block}
+.status-msg.success{background:rgba(52,199,89,0.1);color:var(--green)}
+.status-msg.error{background:rgba(255,59,48,0.1);color:var(--red)}
+</style>
+</head>
+<body>
+<div class="app">
+<nav class="navbar">
+<div class="navbar-inner">
+<div class="nav-links">
+<a href="new/index.html" class="nav-link">新版首页</a>
+<a href="/" class="nav-link">首页</a>
+<a href="/network.html" class="nav-link">网络</a>
+<span class="nav-active">设置</span>
+<a href="/sms.html" class="nav-link">短信</a>
+<a href="/deviceinfo.html" class="nav-link">设备信息</a>
+<a href="/firmware.html" class="nav-link">固件管理</a>
+<a href="/fan.html" class="nav-link">风扇管理</a>
+</div>
+<div class="nav-actions">
+<button class="nav-btn" onclick="toggleLang()" title="Switch Language"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg><span id="lang-code" style="font-size:10px;font-weight:600">zh</span></button>
+<button class="nav-btn" onclick="toggleDark()" title="Toggle Theme" id="theme-btn">🌙</button>
+</div>
+</div>
+</nav>
+
+<main style="max-width:640px;margin:0 auto;padding:12px">
+
+<!-- AT Terminal -->
+<div class="settings-card">
+<div class="settings-title">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg>
+AT 终端
+</div>
+<div class="terminal-box" id="terminal-output">Ready. Type AT command below.
+</div>
+<div class="terminal-input">
+<input type="text" id="at-input" placeholder="输入 AT 命令..." onkeydown="if(event.key==='Enter')sendAT()"/>
+<button class="btn btn-primary" onclick="sendAT()">发送</button>
+<button class="btn btn-secondary" onclick="clearTerminal()">清除</button>
+</div>
+<div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">
+<button class="btn btn-secondary btn-sm" onclick="quickAT('ATI')">查询IMEI</button>
+<button class="btn btn-secondary btn-sm" onclick="quickAT('AT+ICCID')">查询CCID</button>
+<button class="btn btn-secondary btn-sm" onclick="quickAT('AT+CIMI')">查询IMSI</button>
+<button class="btn btn-secondary btn-sm" onclick="quickAT('AT+QSPN')">运营商</button>
+</div>
+</div>
+
+<!-- Quick Tools -->
+<div class="settings-card">
+<div class="settings-title">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+一键工具
+</div>
+<div class="tool-grid">
+<div class="tool-item" onclick="toggleAirplane()">
+<div class="tool-icon" style="background:#FF9500"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.7 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></svg></div>
+<div><div class="tool-text">飞行模式</div><div class="tool-desc">开关飞行模式</div></div>
+</div>
+<div class="tool-item" onclick="rebootDevice()">
+<div class="tool-icon" style="background:#FF3B30"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M21 21v-5h-5"/></svg></div>
+<div><div class="tool-text">重启设备</div><div class="tool-desc">安全重启</div></div>
+</div>
+<div class="tool-item" onclick="resetAT()">
+<div class="tool-icon" style="background:#AF52DE"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></div>
+<div><div class="tool-text">重置AT</div><div class="tool-desc">AT&F 恢复默认</div></div>
+</div>
+<div class="tool-item" onclick="openTerminal()">
+<div class="tool-icon" style="background:#007AFF"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg></div>
+<div><div class="tool-text">SSH 终端</div><div class="tool-desc">打开 Web 终端</div></div>
+</div>
+</div>
+</div>
+
+<!-- IP Passthrough -->
+<div class="settings-card">
+<div class="settings-title">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="m9 12 2 2 4-4"/></svg>
+IP 透传
+</div>
+<div class="form-group">
+<label class="form-label">透传模式</label>
+<select id="passthrough-mode" class="form-select" onchange="updatePassthrough()">
+<option value="disabled">禁用</option>
+<option value="eth">ETH</option>
+<option value="usb">USB (ECM/RNDIS)</option>
+</select>
+</div>
+<div class="form-group">
+<label class="form-label">USB 协议</label>
+<select id="usb-protocol" class="form-select">
+<option value="ecm">ECM (推荐)</option>
+<option value="rmnet">RMNET</option>
+<option value="mbim">MBIM</option>
+<option value="rndis">RNDIS</option>
+</select>
+</div>
+<button class="btn btn-primary btn-sm" onclick="applyPassthrough()">应用</button>
+<div id="passthrough-status" class="status-msg"></div>
+</div>
+
+<!-- DMZ -->
+<div class="settings-card">
+<div class="settings-title">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+DMZ 设置
+</div>
+<div class="form-group">
+<div class="form-row">
+<input type="text" id="dmz-ip" class="form-input" placeholder="DMZ IP 地址"/>
+<button class="btn btn-primary btn-sm" onclick="setDMZ()">启用</button>
+</div>
+</div>
+<div id="dmz-status" class="status-msg"></div>
+</div>
+
+<!-- LAN IP -->
+<div class="settings-card">
+<div class="settings-title">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" x2="6" y1="6" y2="6"/><line x1="6" x2="6" y1="18" y2="18"/></svg>
+LAN IP 设置
+</div>
+<div class="form-group">
+<label class="form-label">LAN IP 地址</label>
+<input type="text" id="lan-ip" class="form-input" value="192.168.225.1"/>
+</div>
+<button class="btn btn-primary btn-sm" onclick="setLANIP()">保存</button>
+<div id="lan-status" class="status-msg"></div>
+</div>
+
+<!-- TTL -->
+<div class="settings-card">
+<div class="settings-title">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+TTL 设置
+</div>
+<div class="form-group">
+<label class="form-label">TTL 值 <span style="font-size:10px;color:var(--text2)">(设置 0 禁用)</span></label>
+<div class="form-row">
+<input type="number" id="ttl-value" class="form-input" value="0" min="0" max="255"/>
+<button class="btn btn-primary btn-sm" onclick="setTTL()">更新</button>
+</div>
+</div>
+<div id="ttl-status" class="status-msg"></div>
+</div>
+
+</main>
+</div>
+
+<script>
+var LANG_KEY='cpe_dashboard_lang';
+var DARK_KEY='cpe_dashboard_dark';
+
+function getLang(){return localStorage.getItem(LANG_KEY)||'zh'}
+function getDark(){var v=localStorage.getItem(DARK_KEY);if(v===null)return window.matchMedia('(prefers-color-scheme:dark)').matches;return v==='true';}
+function toggleLang(){localStorage.setItem(LANG_KEY,getLang()==='zh'?'en':'zh');location.reload();}
+function toggleDark(){localStorage.setItem(DARK_KEY,String(!getDark()));document.documentElement.classList.toggle('dark',!getDark());updateThemeBtn();}
+function updateThemeBtn(){var btn=document.getElementById('theme-btn');if(btn)btn.innerHTML=getDark()?'☀':'🌙';}
+
+function showStatus(id, type, msg) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  el.className = 'status-msg show ' + type;
+  el.textContent = msg;
+  setTimeout(function(){ el.className = 'status-msg'; }, 5000);
+}
+
+// AT Terminal
+function sendAT() {
+  var input = document.getElementById('at-input');
+  var cmd = input.value.trim();
+  if (!cmd) return;
+  
+  var output = document.getElementById('terminal-output');
+  output.textContent += '> ' + cmd + '\n';
+  output.scrollTop = output.scrollHeight;
+  input.value = '';
+  
+  fetch('/cgi-bin/get_atcommand?atcmd=' + encodeURIComponent(cmd))
+    .then(function(r) { return r.text(); })
+    .then(function(t) {
+      output.textContent += t + '\n';
+      output.scrollTop = output.scrollHeight;
+    })
+    .catch(function(e) {
+      output.textContent += 'ERROR: ' + e.message + '\n';
+      output.scrollTop = output.scrollHeight;
+    });
+}
+
+function quickAT(cmd) {
+  document.getElementById('at-input').value = cmd;
+  sendAT();
+}
+
+function clearTerminal() {
+  document.getElementById('terminal-output').textContent = 'Ready.\n';
+}
+
+// Quick Tools
+function toggleAirplane() {
+  if (!confirm('确定要切换飞行模式？')) return;
+  fetch('/cgi-bin/get_atcommand?atcmd=AT%2BCFUN%3D4')
+    .then(function(r) { return r.text(); })
+    .then(function(t) {
+      setTimeout(function() {
+        fetch('/cgi-bin/get_atcommand?atcmd=AT%2BCFUN%3D1');
+      }, 3000);
+      showStatus('tool-status', 'success', '飞行模式已切换');
+    });
+}
+
+function rebootDevice() {
+  if (!confirm('确定要重启设备？')) return;
+  fetch('/cgi-bin/firmware_upgrade?action=reboot')
+    .then(function() { showStatus('tool-status', 'success', '设备正在重启...'); });
+}
+
+function resetAT() {
+  if (!confirm('确定要重置 AT 设置？')) return;
+  fetch('/cgi-bin/get_atcommand?atcmd=AT%26F')
+    .then(function(r) { return r.text(); })
+    .then(function() { showStatus('tool-status', 'success', 'AT 设置已重置'); });
+}
+
+function openTerminal() {
+  window.open('/console', '_blank');
+}
+
+// Passthrough
+function applyPassthrough() {
+  var mode = document.getElementById('passthrough-mode').value;
+  var cmd = mode === 'disabled' ? 'AT+QMAP="WWAN"' : 'AT+QMAP="IPPT"';
+  fetch('/cgi-bin/get_atcommand?atcmd=' + encodeURIComponent(cmd))
+    .then(function(r) { return r.text(); })
+    .then(function() { showStatus('passthrough-status', 'success', '透传设置已更新'); });
+}
+
+// DMZ
+function setDMZ() {
+  var ip = document.getElementById('dmz-ip').value.trim();
+  if (!ip) { showStatus('dmz-status', 'error', '请输入 IP 地址'); return; }
+  fetch('/cgi-bin/get_atcommand?atcmd=AT%2BQMAP%3D%22DMZIP%22%2C%22' + encodeURIComponent(ip) + '%22')
+    .then(function(r) { return r.text(); })
+    .then(function() { showStatus('dmz-status', 'success', 'DMZ 已设置: ' + ip); });
+}
+
+// LAN IP
+function setLANIP() {
+  var ip = document.getElementById('lan-ip').value.trim();
+  if (!ip) { showStatus('lan-status', 'error', '请输入 IP 地址'); return; }
+  showStatus('lan-status', 'success', 'LAN IP 设置需要重启生效: ' + ip);
+}
+
+// TTL
+function setTTL() {
+  var val = document.getElementById('ttl-value').value;
+  fetch('/cgi-bin/set_ttl?ttl=' + val)
+    .then(function(r) { return r.text(); })
+    .then(function(t) { showStatus('ttl-status', 'success', 'TTL 已设置: ' + val); });
+}
+
+// Load current TTL
+fetch('/cgi-bin/get_ttl_status').then(function(r){return r.json()}).then(function(d){
+  if (d.ttl) document.getElementById('ttl-value').value = d.ttl;
+}).catch(function(){});
+
+// Init
+updateThemeBtn();
+var langCode = document.getElementById('lang-code');
+if (langCode) langCode.textContent = getLang();
+
+window.addEventListener('storage', function(e) {
+  if (e.key === DARK_KEY) { document.documentElement.classList.toggle('dark', e.newValue === 'true'); updateThemeBtn(); }
+  if (e.key === LANG_KEY) location.reload();
+});
+</script>
+</body>
+</html>

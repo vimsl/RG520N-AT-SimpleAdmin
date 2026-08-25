@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+<title>救砖模式 - CPE Pro</title>
+<script>
+(function(){
+  var k="cpe_dashboard_dark";
+  function d(){var v=localStorage.getItem(k);if(v===null)return window.matchMedia("(prefers-color-scheme: dark)").matches;return v==="true"}
+  if(d())document.documentElement.classList.add("dark");
+})();
+</script>
+<style>
+:root{--bg:#f5f5f7;--card:#fff;--text:#1d1d1f;--text2:#6e6e73;--border:rgba(0,0,0,0.06);--red:#FF3B30;--green:#34C759;--blue:#007AFF}
+.dark{--bg:#1c1c1e;--card:#2c2c2e;--text:#f5f5f7;--text2:#98989d;--border:rgba(255,255,255,0.08)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center}
+.container{max-width:480px;width:90%;padding:20px}
+.card{background:var(--card);border-radius:16px;padding:24px;box-shadow:0 4px 20px rgba(0,0,0,0.1)}
+.title{text-align:center;margin-bottom:24px}
+.title h1{font-size:24px;font-weight:700;margin-bottom:8px}
+.title p{color:var(--text2);font-size:14px}
+.upload-zone{border:2px dashed var(--border);border-radius:12px;padding:40px 20px;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:16px}
+.upload-zone:hover,.upload-zone.drag-over{border-color:var(--blue);background:rgba(0,122,255,0.05)}
+.upload-zone svg{width:48px;height:48px;color:var(--text2);margin-bottom:12px}
+.upload-zone p{color:var(--text2);font-size:14px}
+.upload-zone .hint{font-size:12px;margin-top:8px}
+.file-input{display:none}
+.progress{display:none;margin-bottom:16px}
+.progress-bar{height:8px;background:var(--border);border-radius:4px;overflow:hidden}
+.progress-fill{height:100%;background:var(--blue);border-radius:4px;transition:width .3s}
+.progress-text{text-align:center;margin-top:8px;font-size:14px;color:var(--text2)}
+.status{padding:12px;border-radius:8px;margin-bottom:16px;font-size:14px;display:none}
+.status.success{background:rgba(52,199,89,0.1);color:var(--green);display:block}
+.status.error{background:rgba(255,59,48,0.1);color:var(--red);display:block}
+.status.info{background:rgba(0,122,255,0.1);color:var(--blue);display:block}
+.btn{width:100%;padding:14px;border:none;border-radius:12px;font-size:16px;font-weight:600;cursor:pointer;transition:all .2s}
+.btn-primary{background:var(--blue);color:#fff}
+.btn-primary:hover{opacity:0.9}
+.btn-primary:disabled{opacity:0.5;cursor:not-allowed}
+.btn-danger{background:var(--red);color:#fff;margin-top:8px}
+.btn-danger:hover{opacity:0.9}
+.info{margin-top:24px;padding:16px;background:var(--border);border-radius:8px}
+.info h3{font-size:14px;font-weight:600;margin-bottom:8px}
+.info p{font-size:12px;color:var(--text2);line-height:1.5}
+.footer{text-align:center;margin-top:24px;font-size:12px;color:var(--text2)}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="card">
+<div class="title">
+<h1>🔧 救砖模式</h1>
+<p>设备已进入恢复模式，请上传固件进行修复</p>
+</div>
+
+<div id="upload-zone" class="upload-zone" onclick="document.getElementById('file-input').click()">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+<polyline points="17 8 12 3 7 8"/>
+<line x1="12" y1="3" x2="12" y2="15"/>
+</svg>
+<p>点击选择文件 或 拖拽文件到此处</p>
+<p class="hint">支持 .bin / .tar.gz / .mbn 固件文件</p>
+</div>
+<input type="file" id="file-input" class="file-input" accept=".bin,.tar.gz,.mbn,.zip" onchange="handleFile(this)"/>
+
+<div id="progress" class="progress">
+<div class="progress-bar"><div id="progress-fill" class="progress-fill" style="width:0%"></div></div>
+<div id="progress-text" class="progress-text">准备上传...</div>
+</div>
+
+<div id="status" class="status"></div>
+
+<button id="upload-btn" class="btn btn-primary" onclick="uploadFirmware()" disabled>上传固件</button>
+<button class="btn btn-danger" onclick="rebootDevice()">重启设备</button>
+
+<div class="info">
+<h3>⚠️ 注意事项</h3>
+<p>• 上传固件后设备将自动重启<br/>
+• 请勿在上传过程中断开连接<br/>
+• 如果上传失败，请重试或检查固件文件<br/>
+• 恢复完成后设备将恢复正常工作</p>
+</div>
+</div>
+
+<div class="footer">
+SimpleAdmin CPE Pro - 救砖模式
+</div>
+</div>
+
+<script>
+var selectedFile = null;
+
+// Setup drag and drop
+var zone = document.getElementById('upload-zone');
+zone.addEventListener('dragover', function(e) {
+  e.preventDefault();
+  zone.classList.add('drag-over');
+});
+zone.addEventListener('dragleave', function(e) {
+  zone.classList.remove('drag-over');
+});
+zone.addEventListener('drop', function(e) {
+  e.preventDefault();
+  zone.classList.remove('drag-over');
+  if (e.dataTransfer.files.length > 0) {
+    handleFileInput(e.dataTransfer.files[0]);
+  }
+});
+
+function handleFile(input) {
+  if (input.files.length > 0) {
+    handleFileInput(input.files[0]);
+  }
+}
+
+function handleFileInput(file) {
+  selectedFile = file;
+  var name = file.name;
+  var size = (file.size / 1024 / 1024).toFixed(2);
+  
+  document.getElementById('upload-zone').innerHTML = 
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:48px;height:48px;color:var(--green);margin-bottom:12px">' +
+    '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>' +
+    '<polyline points="22 4 12 14.01 9 11.01"/>' +
+    '</svg>' +
+    '<p style="font-weight:600">' + name + '</p>' +
+    '<p class="hint">' + size + ' MB</p>';
+  
+  document.getElementById('upload-btn').disabled = false;
+  showStatus('info', '已选择: ' + name + ' (' + size + ' MB)');
+}
+
+function showStatus(type, msg) {
+  var el = document.getElementById('status');
+  el.className = 'status ' + type;
+  el.textContent = msg;
+}
+
+function uploadFirmware() {
+  if (!selectedFile) return;
+  
+  var btn = document.getElementById('upload-btn');
+  btn.disabled = true;
+  btn.textContent = '上传中...';
+  
+  var progress = document.getElementById('progress');
+  progress.style.display = 'block';
+  
+  var formData = new FormData();
+  formData.append('file', selectedFile);
+  
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', '/cgi-bin/firmware_upgrade?action=upload', true);
+  
+  xhr.upload.onprogress = function(e) {
+    if (e.lengthComputable) {
+      var pct = Math.round((e.loaded / e.total) * 100);
+      document.getElementById('progress-fill').style.width = pct + '%';
+      document.getElementById('progress-text').textContent = '上传中... ' + pct + '%';
+    }
+  };
+  
+  xhr.onload = function() {
+    if (xhr.status === 200) {
+      showStatus('success', '上传成功！设备将在几秒后重启...');
+      document.getElementById('progress-text').textContent = '上传完成';
+      setTimeout(function() { rebootDevice(); }, 3000);
+    } else {
+      showStatus('error', '上传失败: ' + xhr.statusText);
+      btn.disabled = false;
+      btn.textContent = '上传固件';
+    }
+  };
+  
+  xhr.onerror = function() {
+    showStatus('error', '网络错误，请检查连接');
+    btn.disabled = false;
+    btn.textContent = '上传固件';
+  };
+  
+  xhr.send(formData);
+}
+
+function rebootDevice() {
+  if (confirm('确定要重启设备吗？')) {
+    fetch('/cgi-bin/firmware_upgrade?action=reboot')
+      .then(function() { showStatus('info', '设备正在重启...'); })
+      .catch(function() { showStatus('error', '重启请求失败'); });
+  }
+}
+</script>
+</body>
+</html>

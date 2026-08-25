@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+<title>SimpleAdmin - Device Info</title>
+<script>
+(function(){
+  var k="cpe_dashboard_dark";
+  function d(){var v=localStorage.getItem(k);if(v===null)return window.matchMedia("(prefers-color-scheme: dark)").matches;return v==="true"}
+  if(d())document.documentElement.classList.add("dark");
+  window.__isDark=d;
+})();
+</script>
+<link rel="stylesheet" href="/new/assets/index-CUTK8mfj.css"/>
+<style>
+.info-grid{display:grid;gap:12px}
+.info-card{background:var(--glass);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:16px;padding:16px;transition:all .3s}
+.info-card:hover{box-shadow:0 4px 12px rgba(0,0,0,0.08)}
+.info-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.info-title svg{width:16px;height:16px}
+.info-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)}
+.info-row:last-child{border-bottom:none}
+.info-label{font-size:12px;color:var(--text2)}
+.info-value{font-size:13px;font-weight:500;color:var(--text);font-family:monospace}
+.progress-wrap{margin-top:8px}
+.progress-header{display:flex;justify-content:space-between;margin-bottom:4px}
+.progress-label{font-size:11px;color:var(--text2)}
+.progress-val{font-size:11px;font-weight:600}
+.progress-bar{height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;border-radius:3px;transition:width .5s}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px}
+.stat-item{text-align:center;padding:8px;background:var(--card);border-radius:10px}
+.stat-val{font-size:18px;font-weight:700}
+.stat-label{font-size:10px;color:var(--text2);margin-top:2px}
+.quick-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.action-btn{display:flex;align-items:center;gap:8px;padding:12px;background:var(--glass);border:1px solid var(--border);border-radius:12px;cursor:pointer;transition:all .2s;text-decoration:none;color:var(--text)}
+.action-btn:hover{background:var(--card);transform:translateY(-2px)}
+.action-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff}
+.action-text{font-size:12px;font-weight:500}
+</style>
+</head>
+<body>
+<div class="app">
+<nav class="navbar">
+<div class="navbar-inner">
+<div class="nav-links">
+<a href="new/index.html" class="nav-link">新版首页</a>
+<a href="/" class="nav-link">首页</a>
+<a href="/network.html" class="nav-link">网络</a>
+<a href="/settings.html" class="nav-link">设置</a>
+<a href="/sms.html" class="nav-link">短信</a>
+<span class="nav-active">设备信息</span>
+<a href="/firmware.html" class="nav-link">固件管理</a>
+<a href="/fan.html" class="nav-link">风扇管理</a>
+</div>
+<div class="nav-actions">
+<button class="nav-btn" onclick="toggleLang()" title="Switch Language"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg><span id="lang-code" style="font-size:10px;font-weight:600">zh</span></button>
+<button class="nav-btn" onclick="toggleDark()" title="Toggle Theme" id="theme-btn">🌙</button>
+</div>
+</div>
+</nav>
+
+<main style="max-width:640px;margin:0 auto;padding:12px">
+<div id="loading" style="text-align:center;padding:40px">
+<div class="spinner"></div>
+<p style="color:var(--text2);margin-top:12px">加载设备信息...</p>
+</div>
+<div id="content" style="display:none"></div>
+</main>
+</div>
+
+<script>
+var LANG_KEY='cpe_dashboard_lang';
+var DARK_KEY='cpe_dashboard_dark';
+
+function getLang(){return localStorage.getItem(LANG_KEY)||'zh'}
+function getDark(){
+  var v=localStorage.getItem(DARK_KEY);
+  if(v===null)return window.matchMedia('(prefers-color-scheme:dark)').matches;
+  return v==='true';
+}
+
+function toggleLang(){
+  var next=getLang()==='zh'?'en':'zh';
+  localStorage.setItem(LANG_KEY,next);
+  location.reload();
+}
+
+function toggleDark(){
+  var next=!getDark();
+  localStorage.setItem(DARK_KEY,String(next));
+  document.documentElement.classList.toggle('dark',next);
+  updateThemeBtn();
+}
+
+function updateThemeBtn(){
+  var btn=document.getElementById('theme-btn');
+  if(btn) btn.innerHTML=getDark()?'☀':'🌙';
+}
+
+var T={
+  zh:{
+    deviceInfo:'设备信息',systemInfo:'系统信息',storage:'存储空间',quickActions:'快捷操作',
+    manufacturer:'制造商',model:'型号',firmware:'固件版本',imei:'IMEI',imsi:'IMSI',iccid:'ICCID',phone:'电话号码',
+    kernel:'内核版本',hostname:'主机名',cpu:'CPU',cores:'CPU核心',uptime:'运行时间',
+    ram:'内存 (RAM)',used:'使用率',available:'可用',free:'空闲',
+    sysPartition:'系统分区',userData:'用户数据',firmwarePartition:'固件分区',
+    sshTerminal:'SSH 终端',firmwareMgmt:'固件管理',fanControl:'风扇管理',networkSettings:'网络设置',
+    days:'天',hours:'小时',minutes:'分钟',
+    unknown:'未知'
+  },
+  en:{
+    deviceInfo:'Device Info',systemInfo:'System Info',storage:'Storage',quickActions:'Quick Actions',
+    manufacturer:'Manufacturer',model:'Model',firmware:'Firmware',imei:'IMEI',imsi:'IMSI',iccid:'ICCID',phone:'Phone',
+    kernel:'Kernel',hostname:'Hostname',cpu:'CPU',cores:'Cores',uptime:'Uptime',
+    ram:'Memory (RAM)',used:'Used',available:'Available',free:'Free',
+    sysPartition:'System',userData:'User Data',firmwarePartition:'Firmware',
+    sshTerminal:'SSH Terminal',firmwareMgmt:'Firmware',fanControl:'Fan Control',networkSettings:'Network',
+    days:'d',hours:'h',minutes:'m',
+    unknown:'Unknown'
+  }
+};
+
+function getColor(pct){
+  if(pct<50)return'#34C759';
+  if(pct<75)return'#FF9500';
+  return'#FF3B30';
+}
+
+function renderInfo(data){
+  var lang=getLang();
+  var t=T[lang];
+  var isDark=getDark();
+  
+  // Update lang display
+  var langCode=document.getElementById('lang-code');
+  if(langCode) langCode.textContent=lang;
+  updateThemeBtn();
+  
+  var html='';
+  
+  // Device Info Card
+  html+='<div class="info-card">';
+  html+='<div class="info-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg>'+t.deviceInfo+'</div>';
+  html+='<div class="info-row"><span class="info-label">'+t.manufacturer+'</span><span class="info-value">'+data.manufacturer+'</span></div>';
+  html+='<div class="info-row"><span class="info-label">'+t.model+'</span><span class="info-value">'+data.model+'</span></div>';
+  html+='<div class="info-row"><span class="info-label">'+t.firmware+'</span><span class="info-value" style="font-size:11px">'+data.firmware+'</span></div>';
+  html+='<div class="info-row"><span class="info-label">'+t.imei+'</span><span class="info-value">'+data.imei+'</span></div>';
+  html+='<div class="info-row"><span class="info-label">'+t.imsi+'</span><span class="info-value">'+data.imsi+'</span></div>';
+  html+='<div class="info-row"><span class="info-label">'+t.iccid+'</span><span class="info-value">'+data.iccid+'</span></div>';
+  html+='<div class="info-row"><span class="info-label">'+t.phone+'</span><span class="info-value">'+(data.phone||t.unknown)+'</span></div>';
+  html+='</div>';
+  
+  // System Info Card
+  html+='<div class="info-card">';
+  html+='<div class="info-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6"/><path d="M9 13h6"/><path d="M9 17h6"/></svg>'+t.systemInfo+'</div>';
+  html+='<div class="info-row"><span class="info-label">'+t.kernel+'</span><span class="info-value">'+data.kernel+'</span></div>';
+  html+='<div class="info-row"><span class="info-label">'+t.hostname+'</span><span class="info-value">'+data.hostname+'</span></div>';
+  html+='<div class="info-row"><span class="info-label">'+t.cpu+'</span><span class="info-value">'+data.cpu+'</span></div>';
+  html+='<div class="info-row"><span class="info-label">'+t.cores+'</span><span class="info-value">'+data.cores+'</span></div>';
+  html+='<div class="info-row"><span class="info-label">'+t.uptime+'</span><span class="info-value">'+data.uptime+'</span></div>';
+  html+='</div>';
+  
+  // Memory Card
+  var ramPct=parseInt(data.ramUsed)/parseInt(data.ramTotal)*100;
+  html+='<div class="info-card">';
+  html+='<div class="info-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 19v-8a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8"/><path d="M6 19h12"/><path d="M10 19v-4h4v4"/></svg>'+t.ram+'</div>';
+  html+='<div class="progress-wrap">';
+  html+='<div class="progress-header"><span class="progress-label">'+data.ramUsed+' / '+data.ramTotal+' MB</span><span class="progress-val" style="color:'+getColor(ramPct)+'">'+Math.round(ramPct)+'%</span></div>';
+  html+='<div class="progress-bar"><div class="progress-fill" style="width:'+ramPct+'%;background:'+getColor(ramPct)+'"></div></div>';
+  html+='</div>';
+  html+='<div class="stat-grid">';
+  html+='<div class="stat-item"><div class="stat-val" style="font-size:14px">'+data.ramUsed+'</div><div class="stat-label">'+t.used+' (MB)</div></div>';
+  html+='<div class="stat-item"><div class="stat-val" style="font-size:14px">'+data.ramAvailable+'</div><div class="stat-label">'+t.available+' (MB)</div></div>';
+  html+='<div class="stat-item"><div class="stat-val" style="font-size:14px">'+data.ramFree+'</div><div class="stat-label">'+t.free+' (MB)</div></div>';
+  html+='</div>';
+  html+='</div>';
+  
+  // Storage Cards
+  html+='<div class="info-card">';
+  html+='<div class="info-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/><line x1="6" x2="6.01" y1="16" y2="16"/><line x1="10" x2="10.01" y1="16" y2="16"/></svg>'+t.storage+'</div>';
+  
+  data.partitions.forEach(function(p){
+    var pct=parseInt(p.used)/parseInt(p.total)*100;
+    html+='<div class="progress-wrap">';
+    html+='<div class="progress-header"><span class="progress-label">'+p.name+' ('+p.mount+')</span><span class="progress-val" style="color:'+getColor(pct)+'">'+p.used+' / '+p.total+' MB</span></div>';
+    html+='<div class="progress-bar"><div class="progress-fill" style="width:'+pct+'%;background:'+getColor(pct)+'"></div></div>';
+    html+='</div>';
+  });
+  html+='</div>';
+  
+  // Quick Actions
+  html+='<div class="info-card">';
+  html+='<div class="info-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>'+t.quickActions+'</div>';
+  html+='<div class="quick-actions">';
+  html+='<a href="/console" class="action-btn"><div class="action-icon" style="background:#007AFF"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg></div><span class="action-text">'+t.sshTerminal+'</span></a>';
+  html+='<a href="/firmware.html" class="action-btn"><div class="action-icon" style="background:#34C759"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><span class="action-text">'+t.firmwareMgmt+'</span></a>';
+  html+='<a href="/fan.html" class="action-btn"><div class="action-icon" style="background:#FF9500"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 12m-3 0a3 3 0 1 0 6 0 3 3 0 1 0-6 0"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></div><span class="action-text">'+t.fanControl+'</span></a>';
+  html+='<a href="/network.html" class="action-btn"><div class="action-icon" style="background:#AF52DE"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><circle cx="12" cy="20" r="1"/></svg></div><span class="action-text">'+t.networkSettings+'</span></a>';
+  html+='</div>';
+  html+='</div>';
+  
+  document.getElementById('content').innerHTML=html;
+  document.getElementById('loading').style.display='none';
+  document.getElementById('content').style.display='block';
+}
+
+function fetchDeviceInfo(){
+  var data={
+    manufacturer:'Quectel',model:'RG520N-AT',firmware:'-',imei:'-',imsi:'-',iccid:'-',phone:'-',
+    kernel:'-',hostname:'-',cpu:'-',cores:'-',uptime:'-',
+    ramTotal:'178',ramUsed:'0',ramAvailable:'0',ramFree:'0',
+    partitions:[]
+  };
+  
+  // Fetch device info via AT commands
+  fetch('/cgi-bin/get_atcommand?atcmd=ATI;+CIMI;+ICCID;+CNUM').then(function(r){return r.text()}).then(function(t){
+    var lines=t.split('\n').map(function(l){return l.trim()}).filter(Boolean);
+    lines.forEach(function(l){
+      if(l.indexOf('Quectel')!==-1) data.manufacturer='Quectel';
+      if(l.indexOf('RG520N')!==-1) data.model=l.split('\n')[0]||'RG520N-AT';
+      if(l.indexOf('Revision:')!==-1) data.firmware=l.split('Revision:')[1]||'-';
+    });
+  }).catch(function(){});
+  
+  // Fetch system info via CGI
+  fetch('/cgi-bin/system_info').then(function(r){return r.json()}).then(function(d){
+    if(d.firmware) data.firmware=d.firmware;
+    if(d.kernel) data.kernel=d.kernel;
+    if(d.hostname) data.hostname=d.hostname;
+    if(d.cpu) data.cpu=d.cpu;
+    if(d.cores) data.cores=d.cores;
+    if(d.uptime) data.uptime=d.uptime;
+    if(d.ram){
+      data.ramTotal=d.ram.total||'178';
+      data.ramUsed=d.ram.used||'0';
+      data.ramAvailable=d.ram.available||'0';
+      data.ramFree=d.ram.free||'0';
+    }
+    if(d.storage) data.partitions=d.storage;
+    if(d.imei) data.imei=d.imei;
+    if(d.imsi) data.imsi=d.imsi;
+    if(d.iccid) data.iccid=d.iccid;
+    if(d.phone) data.phone=d.phone;
+    renderInfo(data);
+  }).catch(function(e){
+    console.error('System info error:',e);
+    // Render with default data
+    data.partitions=[
+      {name:'System',mount:'/',total:'100',used:'50'},
+      {name:'User Data',mount:'/USRDATA',total:'124',used:'34'},
+      {name:'Firmware',mount:'/FIRMWARE',total:'91',used:'64'}
+    ];
+    renderInfo(data);
+  });
+}
+
+// Initialize
+fetchDeviceInfo();
+setInterval(fetchDeviceInfo,30000);
+
+// Sync dark mode
+window.addEventListener('storage',function(e){
+  if(e.key===DARK_KEY){
+    document.documentElement.classList.toggle('dark',e.newValue==='true');
+    updateThemeBtn();
+  }
+  if(e.key===LANG_KEY) location.reload();
+});
+</script>
+</body>
+</html>

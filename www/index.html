@@ -1,0 +1,267 @@
+<html lang="zh-CN"><head><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>SimpleAdmin</title>
+<script>
+(function(){
+  var k="cpe_dashboard_dark";
+  function d(){var v=localStorage.getItem(k);if(v===null)return window.matchMedia("(prefers-color-scheme: dark)").matches;return v==="true"}
+  if(d())document.documentElement.classList.add("dark");
+})();
+</script>
+<script>try{sessionStorage.setItem('cpe_home_seen','1');}catch(e){}</script>
+<style>:root{--bg:#f2f2f7;--card:rgba(255,255,255,0.72);--text:#1d1d1f;--text2:#6e6e73;--border:rgba(0,0,0,0.06);--green:#34c759;--red:#ff3b30;--yellow:#ff9f0a;--blue:#007aff;--cyan:#00c7be;--cyan-dark:#00a9a1;--purple:#af52de;--indigo:#5856d6;--pink:#ff2d55;--orange:#ff9500;--violet:#5856d6;--gray:#8e8e93;--gray-dark:#636366;--teal:#30b0c7;--ring-bg:rgba(0,0,0,0.06);--glass:rgba(255,255,255,0.6);--card-shadow:0 1px 3px rgba(0,0,0,0.06);--card-border:rgba(255,255,255,0.8);--blur:16px}.dark{--bg:#1c1c1e;--card:rgba(44,44,46,0.55);--text:#f5f5f7;--text2:#98989d;--border:rgba(255,255,255,0.08);--ring-bg:rgba(255,255,255,0.1);--glass:rgba(44,44,46,0.6);--card-shadow:0 2px 8px rgba(0,0,0,0.3);--card-border:rgba(255,255,255,0.12);--blur:20px}*{box-sizing:border-box;margin:0;padding:0}body{background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;font-family:-apple-system,BlinkMacSystemFont,SF Pro Display,Segoe UI,Roboto,sans-serif;transition:background .3s,color .3s}.app{flex-direction:column;min-height:100vh;display:flex}main{flex:1;width:100%;max-width:640px;margin:0 auto;padding:10px}.navbar{z-index:50;background:var(--glass);-webkit-backdrop-filter:blur(var(--blur));backdrop-filter:blur(var(--blur));border-bottom:1px solid var(--border);position:sticky;top:0}.navbar-inner{justify-content:space-between;align-items:center;gap:8px;max-width:640px;height:42px;margin:0 auto;padding:0 12px;display:flex}.nav-links{scrollbar-width:none;display:flex;overflow-x:auto;gap:2px}.nav-links::-webkit-scrollbar{display:none}.nav-active,.nav-link{white-space:nowrap;color:var(--text2);border-radius:8px;padding:5px 10px;font-size:11px;font-weight:500;text-decoration:none;transition:all .2s}.nav-active{background:var(--card);color:var(--text);box-shadow:var(--card-shadow)}.nav-link:hover{color:var(--text);background:var(--card)}.nav-actions{flex-shrink:0;align-items:center;gap:2px;display:flex}.nav-btn{color:var(--text2);cursor:pointer;background:0 0;border:none;border-radius:8px;align-items:center;gap:3px;padding:5px 8px;font-size:11px;transition:background .2s;display:flex}.nav-btn:hover{background:var(--card)}.hero-card{background:var(--card);-webkit-backdrop-filter:blur(var(--blur));backdrop-filter:blur(var(--blur));border:1px solid var(--card-border);border-radius:18px;padding:16px 18px 12px;margin-bottom:8px;box-shadow:var(--card-shadow);position:relative;overflow:hidden;display:flex;align-items:center;gap:12px}.hero-card::before{content:"";position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,var(--blue),var(--cyan),var(--green));opacity:.7}.hero-greeting{font-size:12px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:8px;letter-spacing:.4px}.hero-greeting::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px rgba(52,199,89,0.15)}.time-clock{margin:0}.time-digits{color:var(--text);letter-spacing:-2px;font-variant-numeric:tabular-nums;font-size:44px;font-weight:600;line-height:1}.time-sec{color:var(--text2);font-size:22px;font-weight:500}.time-colon{color:var(--text2);font-size:32px;font-weight:400;margin:0 2px}.time-colon.blink{animation:colonBlink 1s step-end infinite}@keyframes colonBlink{50%{opacity:0}}.time-date{color:var(--text2);margin-top:3px;font-size:11px;font-weight:500}.weather-inline{display:none}.status-bar{background:var(--card);-webkit-backdrop-filter:blur(var(--blur));backdrop-filter:blur(var(--blur));border:1px solid var(--card-border);border-radius:12px;color:var(--text2);white-space:nowrap;scrollbar-width:none;gap:8px;padding:7px 14px;font-size:10px;display:flex;overflow-x:auto;margin-bottom:8px;box-shadow:var(--card-shadow)}.status-bar::-webkit-scrollbar{display:none}.section{border-bottom:none;padding:0 0 8px}.section:last-of-type{padding-bottom:0}.section-title{color:var(--text);margin-bottom:6px;padding:0 4px;font-size:13px;font-weight:600}.section-head{justify-content:space-between;align-items:center;margin-bottom:6px;padding:0 4px;display:flex}.section-head h3{font-size:13px;font-weight:600;color:var(--text)}.sub-title{color:var(--text2);text-transform:uppercase;letter-spacing:.8px;margin:8px 0 6px;padding:0 4px;font-size:11px;font-weight:600}.speed-row{grid-template-columns:1fr 1fr;gap:10px;padding:0 4px;display:grid}.speed-label{color:var(--text2);text-transform:uppercase;letter-spacing:.5px;align-items:center;gap:4px;margin-bottom:2px;font-size:10px;font-weight:700;display:flex}.speed-val{letter-spacing:-1.5px;font-size:32px;font-weight:700;line-height:1;color:var(--text)}.speed-dec{color:var(--text2);font-size:17px}.speed-unit{color:var(--text2);font-size:12px;font-weight:500}.wave-wrap{pointer-events:none;transform-origin:bottom;height:24px;margin-top:4px;transition:transform 1s ease-out;position:relative;overflow:hidden}.wave-inner{align-items:flex-end;width:200%;height:100%;animation:4s linear infinite waveFlow;display:flex}@keyframes waveFlow{0%{transform:translate(0)}to{transform:translate(-50%)}}.wave-inner svg{width:50%;height:100%}.sig-badge{display:none}.sig-ring-wrap{display:none}.prog-item{margin-bottom:6px;padding:0 4px}.prog-head{justify-content:space-between;align-items:center;margin-bottom:3px;display:flex}.prog-label{font-size:11px;font-weight:500;color:var(--text)}.prog-val{color:var(--text2);font-family:monospace;font-size:10px}.prog-track{background:var(--ring-bg);border-radius:3px;height:4px;overflow:hidden}.prog-fill{border-radius:3px;height:100%;transition:width 1s ease-out}.metric-row{grid-template-columns:1fr 1fr;gap:6px;padding:0 4px;display:grid}.metric{background:var(--card);-webkit-backdrop-filter:blur(var(--blur));backdrop-filter:blur(var(--blur));border:1px solid var(--card-border);border-radius:12px;align-items:center;gap:8px;padding:10px;display:flex;box-shadow:var(--card-shadow)}.metric-icon{color:#fff;border-radius:8px;flex-shrink:0;justify-content:center;align-items:center;width:28px;height:28px;display:flex;box-shadow:0 2px 6px rgba(0,0,0,0.15)}.metric-icon svg{width:16px;height:16px;stroke:#fff;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}.metric-label{color:var(--text2);text-transform:uppercase;font-size:9px;font-weight:600}.metric-value{font-size:12px;font-weight:600;color:var(--text)}.ant-row{grid-template-columns:1fr 1fr 1fr 1fr;gap:4px;padding:0 4px;display:grid}.ant-box{text-align:center;background:var(--card);-webkit-backdrop-filter:blur(var(--blur));backdrop-filter:blur(var(--blur));border:1px solid var(--card-border);border-radius:8px;padding:7px 4px;box-shadow:var(--card-shadow)}.ant-lbl{color:var(--text2);margin-bottom:2px;font-size:9px}.ant-val{font-family:monospace;font-size:12px;font-weight:600;color:var(--text)}.info-list{padding:0 4px}.info-row{border-bottom:1px solid var(--border);align-items:center;padding:7px 0;display:flex}.info-last{border-bottom:none}.info-icon{color:#fff;border-radius:8px;flex-shrink:0;justify-content:center;align-items:center;width:26px;height:26px;margin-right:10px;display:flex;box-shadow:0 2px 6px rgba(0,0,0,0.12)}.info-icon svg{width:14px;height:14px;stroke:#fff;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}.info-content{flex:1;justify-content:space-between;align-items:center;display:flex;overflow:hidden}.info-label{font-size:12px;font-weight:500;color:var(--text)}.info-value{color:var(--text2);text-align:right;text-overflow:ellipsis;white-space:nowrap;font-size:12px;overflow:hidden}.update-time{color:var(--text2);justify-content:center;align-items:center;gap:4px;padding:8px;font-size:10px;display:flex}.footer{padding:10px 0}.footer-line{background:linear-gradient(90deg,transparent,var(--border),transparent);height:1px;margin-bottom:8px}.footer-text{color:var(--text2);letter-spacing:.5px;font-family:monospace;font-size:10px}
+.section-head .hero-card{margin:0;padding:14px 16px 10px;border-radius:14px;width:100%}
+.section-head{flex-wrap:wrap}
+
+
+
+
+.section .hero-card{margin:0 0 10px;padding:14px 16px 10px;border-radius:14px;box-shadow:0 1px 3px rgba(0,0,0,0.06);border:1px solid var(--card-border);background:var(--card)}
+</style>
+</head>
+<body>
+<div class="app">
+<nav class="navbar">
+<div class="navbar-inner">
+<div class="nav-links">
+<span class="nav-active">首页</span>
+<a href="/network.html" class="nav-link">网络</a>
+<a href="/settings.html" class="nav-link">设置</a>
+<a href="/sms.html" class="nav-link">短信</a>
+<a href="/deviceinfo.html" class="nav-link">设备信息</a>
+<a href="/firmware.html" class="nav-link">固件管理</a>
+</div>
+<div class="nav-actions">
+<button class="nav-btn" onclick="toggleLang()" title="Switch Language"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 8 6 6"></path><path d="m4 14 6-6 2-3"></path><path d="M2 5h12"></path><path d="M7 2h1"></path><path d="m22 22-5-10-5 10"></path><path d="M14 18h6"></path></svg><span id="lang-code" style="font-size:10px;font-weight:600">zh</span></button>
+<button class="nav-btn" onclick="toggleDark()" title="Toggle Theme" id="theme-btn">🌙</button>
+</div>
+</div>
+</nav>
+<main style="max-width:640px;margin:0 auto;padding:12px">
+<div id="content"><div class="hero-card"><div class="hero-greeting">下午好</div><div class="time-clock"><span class="time-digits">16</span><span class="time-colon">:</span><span class="time-digits">10</span><span class="time-colon blink">:</span><span class="time-sec">20</span></div><div class="time-date">2026年8月15日星期六</div><div class="weather-inline" id="weather-inline"></div></div><div class="status-bar"><span>● 已连接</span><span>📶 100%</span><span>T:65°C</span><span>5G NR5G-SA TDD</span><span>🌐 10.2.66.39</span></div><div class="section"><h3 class="section-title">5G 蜂窝网络</h3><div class="speed-row"><div><div class="speed-label">⬇ 下行速率</div><div class="speed-val">1<span class="speed-dec">.56</span> <span class="speed-unit">Mbps</span></div></div><div><div class="speed-label">⬆ 上行速率</div><div class="speed-val">0<span class="speed-dec">.28</span> <span class="speed-unit">Mbps</span></div></div></div><div class="wave-wrap" style="opacity:0.12;transform:scaleY(0.27199100402822257)"><div class="wave-inner"><svg viewBox="0 0 1440 320" preserveAspectRatio="none"><path fill="var(--blue)" d="M0,224L48,213.3C96,203,192,181,288,181.3C384,181,480,203,576,224C672,245,768,267,864,261.3C960,256,1056,224,1152,197.3C1248,171,1344,149,1392,138.7L1440,128V320H0Z"></path></svg><svg viewBox="0 0 1440 320" preserveAspectRatio="none"><path fill="var(--blue)" d="M0,224L48,213.3C96,203,192,181,288,181.3C384,181,480,203,576,224C672,245,768,267,864,261.3C960,256,1056,224,1152,197.3C1248,171,1344,149,1392,138.7L1440,128V320H0Z"></path></svg></div></div></div><div class="section"><div class="section-head"><h3>信号强度</h3><span class="sig-badge" style="background:var(--yellow)">69%</span></div><div class="prog-item"><div class="prog-head"><span class="prog-label">RSRP</span><span class="prog-val">-86 dBm</span></div><div class="prog-track"><div class="prog-fill" style="width:68%;background:var(--yellow)"></div></div></div><div class="prog-item"><div class="prog-head"><span class="prog-label">SINR</span><span class="prog-val">21 dB</span></div><div class="prog-track"><div class="prog-fill" style="width:69%;background:var(--yellow)"></div></div></div><div class="prog-item"><div class="prog-head"><span class="prog-label">RSRQ</span><span class="prog-val">-10 dB</span></div><div class="prog-track"><div class="prog-fill" style="width:83%;background:var(--green)"></div></div></div><div class="sig-ring-wrap"><div class="sig-ring"><svg viewBox="0 0 128 128"><circle cx="64" cy="64" r="54" fill="none" stroke="var(--ring-bg)" stroke-width="8"></circle><circle cx="64" cy="64" r="54" fill="none" stroke="var(--yellow)" stroke-width="8" stroke-dasharray="233.91 339" stroke-linecap="round" style="transform:rotate(-90deg);transform-origin:center;transition:stroke-dasharray 1s"></circle></svg><div class="ring-center"><span class="ring-num">69</span><span class="ring-lbl">质量</span></div></div></div><h4 class="sub-title">频段配置</h4><div class="metric-row"><div class="metric"><div class="metric-icon" style="background:var(--purple)"><svg viewBox="0 0 24 24"><path d="M16.247 7.761a6 6 0 0 1 0 8.478"></path> <path d="M19.075 4.933a10 10 0 0 1 0 14.134"></path> <path d="M4.925 19.067a10 10 0 0 1 0-14.134"></path> <path d="M7.753 16.239a6 6 0 0 1 0-8.478"></path> <circle cx="12" cy="12" r="2"></circle></svg></div><div><div class="metric-label">频段</div><div class="metric-value">N78</div></div></div><div class="metric"><div class="metric-icon" style="background:var(--indigo)"><svg viewBox="0 0 24 24"><path d="m18 8 4 4-4 4"></path> <path d="M2 12h20"></path> <path d="m6 8-4 4 4 4"></path></svg></div><div><div class="metric-label">带宽</div><div class="metric-value">120 MHz</div></div></div><div class="metric"><div class="metric-icon" style="background:var(--pink)"><svg viewBox="0 0 24 24"><line x1="4" x2="20" y1="9" y2="9"></line> <line x1="4" x2="20" y1="15" y2="15"></line> <line x1="10" x2="8" y1="3" y2="21"></line> <line x1="16" x2="14" y1="3" y2="21"></line></svg></div><div><div class="metric-label">ARFCN</div><div class="metric-value">633984</div></div></div><div class="metric"><div class="metric-icon" style="background:var(--orange)"><svg viewBox="0 0 24 24"><rect width="20" height="8" x="2" y="2" rx="2" ry="2"></rect><rect width="20" height="8" x="2" y="14" rx="2" ry="2"></rect><line x1="6" x2="6.01" y1="6" y2="6"></line><line x1="6" x2="6.01" y1="18" y2="18"></line></svg></div><div><div class="metric-label">PCI</div><div class="metric-value">720</div></div></div></div><h4 class="sub-title">天线分集</h4><div class="ant-row"><div class="ant-box"><div class="ant-lbl">MAIN</div><div class="ant-val"> -101</div></div><div class="ant-box"><div class="ant-lbl">DIV</div><div class="ant-val">-94</div></div><div class="ant-box"><div class="ant-lbl">MIMO 1</div><div class="ant-val">-93</div></div><div class="ant-box"><div class="ant-lbl">MIMO 2</div><div class="ant-val">-86</div></div></div></div><div class="section"><h3 class="section-title">网络信息</h3><div class="info-list"><div class="info-row"><div class="info-icon" style="background:var(--green)"><svg viewBox="0 0 24 24"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"></rect> <path d="M12 18h.01"></path></svg></div><div class="info-content"><span class="info-label">SIM卡</span><span class="info-value">已激活</span></div></div><div class="info-row"><div class="info-icon" style="background:var(--blue)"><svg viewBox="0 0 24 24"><path d="M2 20h.01"></path> <path d="M7 20v-4"></path> <path d="M12 20v-8"></path> <path d="M17 20V8"></path> <path d="M22 4v16"></path></svg></div><div class="info-content"><span class="info-label">运营商</span><span class="info-value">中国联通</span></div></div><div class="info-row"><div class="info-icon" style="background:var(--purple)"><svg viewBox="0 0 24 24"><line x1="4" x2="20" y1="9" y2="9"></line> <line x1="4" x2="20" y1="15" y2="15"></line> <line x1="10" x2="8" y1="3" y2="21"></line> <line x1="16" x2="14" y1="3" y2="21"></line></svg></div><div class="info-content"><span class="info-label">MCCMNC</span><span class="info-value">46001</span></div></div><div class="info-row"><div class="info-icon" style="background:var(--green)"><svg viewBox="0 0 24 24"><path d="M4.9 16.1C1 12.2 1 5.8 4.9 1.9"></path> <path d="M7.8 4.7a6.14 6.14 0 0 0-.8 7.5"></path> <circle cx="12" cy="9" r="2"></circle> <path d="M16.2 4.8c2 2 2.26 5.11.8 7.47"></path> <path d="M19.1 1.9a9.96 9.96 0 0 1 0 14.1"></path> <path d="M9.5 18h5"></path> <path d="m8 22 4-11 4 11"></path></svg></div><div class="info-content"><span class="info-label">网络模式</span><span class="info-value">NR5G-SA TDD</span></div></div><div class="info-row"><div class="info-icon" style="background:var(--teal)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle> <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path> <path d="M2 12h20"></path></svg></div><div class="info-content"><span class="info-label">APN</span><span class="info-value">3GNET</span></div></div><div class="info-row"><div class="info-icon" style="background:var(--cyan)"><svg viewBox="0 0 24 24"><path d="M12 15V3"></path> <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path> <path d="m7 10 5 5 5-5"></path></svg></div><div class="info-content"><span class="info-label">下行带宽</span><span class="info-value">500 Mbps</span></div></div><div class="info-row"><div class="info-icon" style="background:var(--cyan-dark)"><svg viewBox="0 0 24 24"><path d="M12 3v12"></path> <path d="m17 8-5-5-5 5"></path> <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path></svg></div><div class="info-content"><span class="info-label">上行带宽</span><span class="info-value">100 Mbps</span></div></div><div class="info-row"><div class="info-icon" style="background:var(--violet)"><svg viewBox="0 0 24 24"><path d="M4 22V4a1 1 0 0 1 .4-.8A6 6 0 0 1 8 2c3 0 5 2 7.333 2q2 0 3.067-.8A1 1 0 0 1 20 4v10a1 1 0 0 1-.4.8A6 6 0 0 1 16 16c-3 0-5-2-8-2a6 6 0 0 0-4 1.528"></path></svg></div><div class="info-content"><span class="info-label">优先级</span><span class="info-value">6</span></div></div><div class="info-row"><div class="info-icon" style="background:var(--red)"><svg viewBox="0 0 24 24"><path d="M10 12h4"></path> <path d="M10 8h4"></path> <path d="M14 21v-3a2 2 0 0 0-4 0v3"></path> <path d="M6 10H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2"></path> <path d="M6 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16"></path></svg></div><div class="info-content"><span class="info-label">基站ID</span><span class="info-value">820CB6188</span></div></div><div class="info-row"><div class="info-icon" style="background:var(--gray)"><svg viewBox="0 0 24 24"><path d="M12 20h.01"></path> <path d="M2 8.82a15 15 0 0 1 20 0"></path> <path d="M5 12.859a10 10 0 0 1 14 0"></path> <path d="M8.5 16.429a5 5 0 0 1 7 0"></path></svg></div><div class="info-content"><span class="info-label">IPv4</span><span class="info-value">10.2.66.39</span></div></div><div class="info-row"><div class="info-icon" style="background:var(--gray-dark)"><svg viewBox="0 0 24 24"><path d="M12 20h.01"></path> <path d="M8.5 16.429a5 5 0 0 1 7 0"></path> <path d="M5 12.859a10 10 0 0 1 5.17-2.69"></path> <path d="M19 12.859a10 10 0 0 0-2.007-1.523"></path> <path d="M2 8.82a15 15 0 0 1 4.177-2.643"></path> <path d="M22 8.82a15 15 0 0 0-11.288-3.764"></path> <path d="m2 2 20 20"></path></svg></div><div class="info-content"><span class="info-label">IPv6</span><span class="info-value">2408:8459:5060:4493:454b:57f4:7481:75bf</span></div></div><div class="info-row info-last"><div class="info-icon" style="background:var(--teal)"><svg viewBox="0 0 24 24"><path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"></path></svg></div><div class="info-content"><span class="info-label">温度</span><span class="info-value">65 ?C</span></div></div></div></div><div class="update-time">🕐 2026/8/15 16:10:19</div></div>
+</main>
+<footer class="footer"><div class="footer-line"><p class="footer-text">SimpleAdmin</p></div></footer>
+</div>
+<script>
+var LANG_KEY='cpe_dashboard_lang',DARK_KEY='cpe_dashboard_dark';
+function getLang(){return localStorage.getItem(LANG_KEY)||'zh'}
+function getDark(){var v=localStorage.getItem(DARK_KEY);if(v===null)return window.matchMedia('(prefers-color-scheme:dark)').matches;return v==='true'}
+function toggleLang(){localStorage.setItem(LANG_KEY,getLang()==='zh'?'en':'zh');location.reload()}
+function toggleDark(){localStorage.setItem(DARK_KEY,String(!getDark()));document.documentElement.classList.toggle('dark',!getDark());updateThemeBtn()}
+function updateThemeBtn(){var b=document.getElementById('theme-btn');if(b)b.innerHTML=getDark()?'☀':'🌙'}
+function getColor(p){return p>70?'var(--green)':p>40?'var(--yellow)':'var(--red)'}
+
+var T={zh:{on:'已连接',off:'离线',dl:'下行速率',ul:'上行速率',mbps:'Mbps',sig:'信号强度',qual:'质量',rsrp:'RSRP',sinr:'SINR',rsrq:'RSRQ',chan:'频段配置',band:'频段',bw:'带宽',arfcn:'ARFCN',pci:'PCI',ant:'天线分集',m:'MAIN',d:'DIV',m1:'MIMO 1',m2:'MIMO 2',net:'网络信息',car:'运营商',mode:'网络模式',dlBw:'下行带宽',ulBw:'上行带宽',pri:'优先级',cell:'基站ID',ip4:'IPv4',ip6:'IPv6',tmp:'温度',sim:'SIM卡',apn:'APN',g:{n:'夜深了',m:'早上好',nn:'中午好',a:'下午好',e:'晚上好'}},
+en:{on:'Online',off:'Offline',dl:'DOWNLOAD',ul:'UPLOAD',mbps:'Mbps',sig:'Signal',qual:'Quality',rsrp:'RSRP',sinr:'SINR',rsrq:'RSRQ',chan:'Channel',band:'Band',bw:'BW',arfcn:'ARFCN',pci:'PCI',ant:'Antenna',m:'MAIN',d:'DIV',m1:'MIMO 1',m2:'MIMO 2',net:'Network',car:'Carrier',mode:'Mode',dlBw:'DL BW',ulBw:'UL BW',pri:'Priority',cell:'Cell ID',ip4:'IPv4',ip6:'IPv6',tmp:'Temp',sim:'SIM',apn:'APN',g:{n:'Good Night',m:'Good Morning',nn:'Good Noon',a:'Good Afternoon',e:'Good Evening'}}};
+
+function render(){
+var lang=getLang(),isDark=getDark(),t=T[lang];
+document.getElementById('lang-code').textContent=lang;
+updateThemeBtn();
+
+Promise.all([
+  fetch('/cgi-bin/get_atcommand?atcmd=AT%2BQSIMSTAT%3F%3B%2BCSQ%3B%2BQTEMP%3B%2BQUIMSLOT%3F%3B%2BQSPN%3B%2BCGCONTRDP%3D1%3B%2BQMAP%3D%22WWANIP%22').then(function(r){return r.text()}).catch(function(){return ''}),
+  fetch('/cgi-bin/get_atcommand?atcmd=AT%2BQENG%3D%22servingcell%22%3B%2BQNWINFO%3B%2BQRSRP%3B%2BQNWCFG%3D%22nr5g_ambr%22%3B%2BQNWCFG%3D%22up%2Fdown%22').then(function(r){return r.text()}).catch(function(){return ''})
+]).then(function(a){return a[0]+'\n'+a[1]}).then(function(raw){
+if(window._lastRaw===raw && document.querySelector('.time-clock')){updateClock();return;}
+window._lastRaw=raw;
+var lines=raw.split('\n').map(function(l){return l.trim()}).filter(Boolean);
+var d={temp:'0',sim:'-',sig:0,on:false,rsrp:'-',sinr:'-',rsrq:'-',band:'-',bw:'-',earfcn:'-',pci:'-',prx:'-',drx:'-',rx2:'-',rx3:'-',car:'-',mccmnc:'-',apn:'-',mode:'-',dlBw:'0',ulBw:'0',pri:'-',cell:'-',ip4:'-',ip6:'-',nd:'0.00',nu:'0.00'};
+lines.forEach(function(l){
+if(l.indexOf('+QTEMP:')>-1){var m=l.match(/"(\d+)"/);if(m&&parseInt(m[1])>0)d.temp=m[1]}
+if(l.indexOf('+QSIMSTAT:')>-1){d.sim=l.indexOf(',1')>-1?'已激活':'未插入'}
+if(l.indexOf('+CSQ:')>-1){d.sig=Math.min(100,Math.round(parseInt(l.split(':')[1])/31*100))}
+if(l.indexOf('+QSPN:')>-1){var p=l.split(',');if(p.length>=4)d.car=(function(h){try{var r="";for(var i=0;i<h.length;i+=4){var c=parseInt(h.substr(i,4),16);if(!isNaN(c))r+=String.fromCharCode(c)}return r||h}catch(e){return h}})(p[1].replace(/"/g,""));if(p.length>=5)d.mccmnc=p[4].replace(/"/g,'')}
+if(l.indexOf('+CGCONTRDP:')>-1){var p=l.split(',');if(p.length>=3)d.apn=p[2].replace(/"/g,'');if(p.length>=4)d.ip4=p[3].replace(/"/g,'')}
+if(l.indexOf('+QMAP:')>-1&&l.indexOf('"IPV4"')>-1){var p=l.split(',');if(p.length>=5)d.ip4=p[4].replace(/"/g,'')}
+if(l.indexOf('+QMAP:')>-1&&l.indexOf('"IPV6"')>-1){var p=l.split(',');if(p.length>=5)d.ip6=p[4].replace(/"/g,'')}
+if(l.indexOf('+QENG:')>-1){var p=l.split(',');if(p.length>=15){d.mode=(p[2]||'').replace(/"/g,'')+' '+(p[3]||'').replace(/"/g,'');d.band='N'+(p[10]||'');d.bw=(p[11]||'')+'0 MHz';d.earfcn=p[9]||'-';d.pci=p[7]||'-';d.cell=p[6]||'-';d.rsrp=p[12]||'-';d.rsrq=p[13]||'-';d.sinr=p[14]||'-'}}
+if(l.indexOf('+QRSRP:')>-1){var p=l.split(',');d.prx=(p[0]||'').split(':')[1]||'-';d.drx=p[1]||'-';d.rx2=p[2]||'-';d.rx3=p[3]||'-'}
+if(l.indexOf('+QNWCFG:')>-1&&l.indexOf('nr5g_ambr')>-1){var p=l.split(',');if(p.length>=5){d.dlBw=p[3]||'0';d.ulBw=p[5]||'0';d.pri=p[2]||'-'}}
+if(l.indexOf('+QNWCFG:')>-1&&l.indexOf('up/down')>-1){var p=l.split(',');if(p.length>=3){d.nu=((parseInt(p[1])||0)/1e6).toFixed(2);d.nd=((parseInt(p[2])||0)/1e6).toFixed(2)}}
+});
+d.on=d.ip4&&d.ip4.length>5&&d.ip4!=='-';
+d.lu=new Date().toLocaleString(lang==='zh'?'zh-CN':'en-US');
+
+var rpP=Math.round(Math.min(Math.max((parseFloat(d.rsrp)+140)/80*100,0),100));
+var siP=Math.round(Math.min(Math.max((parseFloat(d.sinr)+10)/45*100,0),100));
+var rqP=Math.round(Math.min(Math.max((parseFloat(d.rsrq)+20)/12*100,0),100));
+var sgP=Math.round((rpP+siP)/2);
+var sgC=getColor(sgP);
+var iL=d.mode.indexOf('LTE')>-1;
+var now=new Date(),h=now.getHours(),g=t.g;
+var gr=h<5?g.n:h<11?g.m:h<13?g.nn:h<18?g.a:g.e;
+var wvO=isDark?0.25:0.12;
+var wvS=Math.min(Math.max(Math.log10(parseFloat(d.nd)+parseFloat(d.nu)+1)*0.6,0.15),1.8);
+function H(v){return typeof esc==='function'?esc(v):String(v);}
+
+var html='';
+
+
+html+='<div class="status-bar"><span>'+(d.on?'●':'○')+' '+(d.on?t.on:t.off)+'</span><span>📶 '+H(d.sig)+'%</span><span>T:'+d.temp+'°C</span><span>'+(iL?'4G':'5G')+' '+H(d.mode)+'</span><span>🌐 '+H(d.ip4)+'</span></div>';
+html+='<div class="section"><h3 class="section-title">'+(iL?'4G':'5G')+' 蜂窝网络</h3><div class="speed-row">';
+html+='<div><div class="speed-label">⬇ '+t.dl+'</div><div class="speed-val">'+Math.floor(parseFloat(d.nd))+'<span class="speed-dec">.'+(H(d.nd.split('.')[1])||'00')+'</span> <span class="speed-unit">'+t.mbps+'</span></div></div>';
+html+='<div><div class="speed-label">⬆ '+t.ul+'</div><div class="speed-val">'+Math.floor(parseFloat(d.nu))+'<span class="speed-dec">.'+(H(d.nu.split('.')[1])||'00')+'</span> <span class="speed-unit">'+t.mbps+'</span></div></div></div>';
+html+='<div class="wave-wrap" style="opacity:'+wvO+';transform:scaleY('+wvS+')"><div class="wave-inner"><svg viewBox="0 0 1440 320" preserveAspectRatio="none"><path fill="var(--blue)" d="M0,224L48,213.3C96,203,192,181,288,181.3C384,181,480,203,576,224C672,245,768,267,864,261.3C960,256,1056,224,1152,197.3C1248,171,1344,149,1392,138.7L1440,128V320H0Z"/></svg><svg viewBox="0 0 1440 320" preserveAspectRatio="none"><path fill="var(--blue)" d="M0,224L48,213.3C96,203,192,181,288,181.3C384,181,480,203,576,224C672,245,768,267,864,261.3C960,256,1056,224,1152,197.3C1248,171,1344,149,1392,138.7L1440,128V320H0Z"/></svg></div></div></div>';
+html+='<div class="hero-card"><div class="hero-greeting">'+gr+'</div><div class="time-clock"><span class="time-digits">'+String(h).padStart(2,'0')+'</span><span class="time-colon">:</span><span class="time-digits">'+String(now.getMinutes()).padStart(2,'0')+'</span><span class="time-colon blink">:</span><span class="time-sec">'+String(now.getSeconds()).padStart(2,'0')+'</span></div><div class="time-date">'+now.toLocaleDateString(lang==='zh'?'zh-CN':'en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'})+'</div><div class="weather-inline" id="weather-inline"></div></div>';
+html+='<div class="section"><div class="section-head"><h3>'+t.sig+'</h3><span class="sig-badge" style="background:'+sgC+'">'+sgP+'%</span></div>';
+html+='<div class="prog-item"><div class="prog-head"><span class="prog-label">'+t.rsrp+'</span><span class="prog-val">'+H(d.rsrp)+' dBm</span></div><div class="prog-track"><div class="prog-fill" style="width:'+rpP+'%;background:'+getColor(rpP)+'"></div></div></div>';
+html+='<div class="prog-item"><div class="prog-head"><span class="prog-label">'+t.sinr+'</span><span class="prog-val">'+H(d.sinr)+' dB</span></div><div class="prog-track"><div class="prog-fill" style="width:'+siP+'%;background:'+getColor(siP)+'"></div></div></div>';
+html+='<div class="prog-item"><div class="prog-head"><span class="prog-label">'+t.rsrq+'</span><span class="prog-val">'+H(d.rsrq)+' dB</span></div><div class="prog-track"><div class="prog-fill" style="width:'+rqP+'%;background:'+getColor(rqP)+'"></div></div></div>';
+html+='<div class="sig-ring-wrap"><div class="sig-ring"><svg viewBox="0 0 128 128"><circle cx="64" cy="64" r="54" fill="none" stroke="var(--ring-bg)" stroke-width="8"/><circle cx="64" cy="64" r="54" fill="none" stroke="'+sgC+'" stroke-width="8" stroke-dasharray="'+sgP*3.39+' 339" stroke-linecap="round" style="transform:rotate(-90deg);transform-origin:center;transition:stroke-dasharray 1s"/></svg><div class="ring-center"><span class="ring-num">'+sgP+'</span><span class="ring-lbl">'+t.qual+'</span></div></div></div>';
+html+='<h4 class="sub-title">'+t.chan+'</h4><div class="metric-row">';
+html+='<div class="metric"><div class="metric-icon" style="background:var(--purple)"><svg viewBox="0 0 24 24"><path d="M16.247 7.761a6 6 0 0 1 0 8.478" /> <path d="M19.075 4.933a10 10 0 0 1 0 14.134" /> <path d="M4.925 19.067a10 10 0 0 1 0-14.134" /> <path d="M7.753 16.239a6 6 0 0 1 0-8.478" /> <circle cx="12" cy="12" r="2" /></svg></div><div><div class="metric-label">'+t.band+'</div><div class="metric-value">'+H(d.band)+'</div></div></div>';
+html+='<div class="metric"><div class="metric-icon" style="background:var(--indigo)"><svg viewBox="0 0 24 24"><path d="m18 8 4 4-4 4" /> <path d="M2 12h20" /> <path d="m6 8-4 4 4 4" /></svg></div><div><div class="metric-label">'+t.bw+'</div><div class="metric-value">'+H(d.bw)+'</div></div></div>';
+html+='<div class="metric"><div class="metric-icon" style="background:var(--pink)"><svg viewBox="0 0 24 24"><line x1="4" x2="20" y1="9" y2="9" /> <line x1="4" x2="20" y1="15" y2="15" /> <line x1="10" x2="8" y1="3" y2="21" /> <line x1="16" x2="14" y1="3" y2="21" /></svg></div><div><div class="metric-label">'+t.arfcn+'</div><div class="metric-value">'+H(d.earfcn)+'</div></div></div>';
+html+='<div class="metric"><div class="metric-icon" style="background:var(--orange)"><svg viewBox="0 0 24 24"><rect width="20" height="8" x="2" y="2" rx="2" ry="2"/><rect width="20" height="8" x="2" y="14" rx="2" ry="2"/><line x1="6" x2="6.01" y1="6" y2="6"/><line x1="6" x2="6.01" y1="18" y2="18"/></svg></div><div><div class="metric-label">'+t.pci+'</div><div class="metric-value">'+H(d.pci)+'</div></div></div></div>';
+html+='<h4 class="sub-title">'+t.ant+'</h4><div class="ant-row">';
+html+='<div class="ant-box"><div class="ant-lbl">'+t.m+'</div><div class="ant-val">'+H(d.prx)+'</div></div>';
+html+='<div class="ant-box"><div class="ant-lbl">'+t.d+'</div><div class="ant-val">'+H(d.drx)+'</div></div>';
+html+='<div class="ant-box"><div class="ant-lbl">'+t.m1+'</div><div class="ant-val">'+H(d.rx2)+'</div></div>';
+html+='<div class="ant-box"><div class="ant-lbl">'+t.m2+'</div><div class="ant-val">'+H(d.rx3)+'</div></div></div></div>';
+html+='<div class="section"><h3 class="section-title">'+t.net+'</h3><div class="info-list">';
+var _IC=["<rect width=\"14\" height=\"20\" x=\"5\" y=\"2\" rx=\"2\" ry=\"2\" /> <path d=\"M12 18h.01\" />","<path d=\"M2 20h.01\" /> <path d=\"M7 20v-4\" /> <path d=\"M12 20v-8\" /> <path d=\"M17 20V8\" /> <path d=\"M22 4v16\" />","<line x1=\"4\" x2=\"20\" y1=\"9\" y2=\"9\" /> <line x1=\"4\" x2=\"20\" y1=\"15\" y2=\"15\" /> <line x1=\"10\" x2=\"8\" y1=\"3\" y2=\"21\" /> <line x1=\"16\" x2=\"14\" y1=\"3\" y2=\"21\" />","<path d=\"M4.9 16.1C1 12.2 1 5.8 4.9 1.9\" /> <path d=\"M7.8 4.7a6.14 6.14 0 0 0-.8 7.5\" /> <circle cx=\"12\" cy=\"9\" r=\"2\" /> <path d=\"M16.2 4.8c2 2 2.26 5.11.8 7.47\" /> <path d=\"M19.1 1.9a9.96 9.96 0 0 1 0 14.1\" /> <path d=\"M9.5 18h5\" /> <path d=\"m8 22 4-11 4 11\" />","<circle cx=\"12\" cy=\"12\" r=\"10\" /> <path d=\"M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20\" /> <path d=\"M2 12h20\" />","<path d=\"M12 15V3\" /> <path d=\"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4\" /> <path d=\"m7 10 5 5 5-5\" />","<path d=\"M12 3v12\" /> <path d=\"m17 8-5-5-5 5\" /> <path d=\"M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4\" />","<path d=\"M4 22V4a1 1 0 0 1 .4-.8A6 6 0 0 1 8 2c3 0 5 2 7.333 2q2 0 3.067-.8A1 1 0 0 1 20 4v10a1 1 0 0 1-.4.8A6 6 0 0 1 16 16c-3 0-5-2-8-2a6 6 0 0 0-4 1.528\" />","<path d=\"M10 12h4\" /> <path d=\"M10 8h4\" /> <path d=\"M14 21v-3a2 2 0 0 0-4 0v3\" /> <path d=\"M6 10H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2\" /> <path d=\"M6 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16\" />","<path d=\"M12 20h.01\" /> <path d=\"M2 8.82a15 15 0 0 1 20 0\" /> <path d=\"M5 12.859a10 10 0 0 1 14 0\" /> <path d=\"M8.5 16.429a5 5 0 0 1 7 0\" />","<path d=\"M12 20h.01\" /> <path d=\"M8.5 16.429a5 5 0 0 1 7 0\" /> <path d=\"M5 12.859a10 10 0 0 1 5.17-2.69\" /> <path d=\"M19 12.859a10 10 0 0 0-2.007-1.523\" /> <path d=\"M2 8.82a15 15 0 0 1 4.177-2.643\" /> <path d=\"M22 8.82a15 15 0 0 0-11.288-3.764\" /> <path d=\"m2 2 20 20\" />","<path d=\"M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z\" />"];var rows=[['var(--green)',t.sim,H(d.sim)],['var(--blue)',t.car,H(d.car)],['var(--purple)','MCCMNC',H(d.mccmnc)],['var(--green)',t.mode,H(d.mode)],['var(--teal)',t.apn,H(d.apn)],['var(--cyan)',t.dlBw,H(d.dlBw)+' Mbps'],['var(--cyan-dark)',t.ulBw,H(d.ulBw)+' Mbps'],['var(--violet)',t.pri,H(d.pri)],['var(--red)',t.cell,H(d.cell)],['var(--gray)',t.ip4,H(d.ip4)],['var(--gray-dark)',t.ip6,H(d.ip6)],['var(--teal)',t.tmp,H(d.temp)+' ?C']];
+rows.forEach(function(r,i){html+='<div class="info-row'+(i===rows.length-1?' info-last':'')+'"><div class="info-icon" style="background:'+r[0]+'"><svg viewBox="0 0 24 24">'+_IC[i]+'</svg></div><div class="info-content"><span class="info-label">'+r[1]+'</span><span class="info-value">'+r[2]+'</span></div></div>'});
+html+='</div></div>';
+html+='<div class="update-time">🕐 '+H(d.lu)+'</div>';
+document.getElementById('content').innerHTML=html;
+try{
+  var _hero=document.querySelector('.hero-card');
+  var _sigCard=document.querySelector('.section:has(.section-head):has(.prog-item)');
+  if(_hero&&_sigCard){_sigCard.insertBefore(_hero,_sigCard.firstChild);}
+  var _pct=69;var _badge=document.querySelector('.sig-badge');
+  if(_badge){var _m=_badge.textContent.match(/(\d+)/);if(_m)_pct=parseInt(_m[1])}
+  var _sigUI=document.createElement('div');_sigUI.style.cssText='display:flex;align-items:center;gap:8px;flex-shrink:0;margin-left:auto';
+  var _bars=document.createElement('div');_bars.style.cssText='display:flex;align-items:flex-end;gap:2px;height:18px';
+  for(var _i=0;_i<5;_i++){var _bar=document.createElement('div');_bar.style.cssText='width:3px;border-radius:1.5px;height:'+(5+_i*3)+'px;background:'+(_pct>=(_i+1)*20?'var(--green)':'var(--ring-bg)');_bars.appendChild(_bar)}
+  var _pctEl=document.createElement('span');_pctEl.style.cssText='font-size:13px;font-weight:700;color:var(--text)';_pctEl.textContent=_pct+'%';
+  _sigUI.appendChild(_bars);_sigUI.appendChild(_pctEl);
+  var _sigHead=_sigCard?_sigCard.querySelector('.section-head'):null;
+  if(_sigHead)_sigHead.appendChild(_sigUI);
+  var _c1=['#6366f1','#8b5cf6','#a78bfa','#818cf8'];
+  document.querySelectorAll('.metric-icon').forEach(function(e,i){e.style.background=_c1[i%4]});
+  var _c2=['#10b981','#3b82f6','#8b5cf6','#10b981','#06b6d4','#06b6d4','#0ea5e9','#6366f1','#ef4444','#6b7280','#374151','#0d9488'];
+  document.querySelectorAll('.info-icon').forEach(function(e,i){if(i<_c2.length)e.style.background=_c2[i]});
+}catch(_e){}
+if(typeof applyI18n==='function')applyI18n(document.getElementById('content'));
+if(typeof paintWeather==='function')paintWeather();
+if(!window._weatherData&&!window._weatherLoading&&typeof loadWeather==='function')loadWeather();
+}).catch(function(e){console.error(e);});
+}
+
+function updateClock(){
+  var now=new Date(),h=now.getHours(),lang=getLang(),t=T[lang];
+  var gr=h<5?t.g.n:h<11?t.g.m:h<13?t.g.nn:h<18?t.g.a:t.g.e;
+  var digits=document.querySelectorAll('.time-digits');
+  if(digits.length>=2){digits[0].textContent=String(h).padStart(2,'0');digits[1].textContent=String(now.getMinutes()).padStart(2,'0');}
+  var sec=document.querySelector('.time-sec');if(sec)sec.textContent=String(now.getSeconds()).padStart(2,'0');
+  var date=document.querySelector('.time-date');if(date)date.textContent=now.toLocaleDateString(lang==='zh'?'zh-CN':'en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  var greeting=document.querySelector('.hero-greeting');if(greeting)greeting.textContent=gr;
+}
+
+render();
+setInterval(render,10000);
+setInterval(updateClock,1000);
+updateThemeBtn();
+
+// Weather widget
+function wDesc(code,lang){
+  var zh={sun:'晴',cloud:'多云',overcast:'阴',fog:'雾',rain:'雨',snow:'雪',thunder:'雷雨'};
+  var en={sun:'Sunny',cloud:'Partly Cloudy',overcast:'Overcast',fog:'Fog',rain:'Rain',snow:'Snow',thunder:'Thunderstorm'};
+  var k='sun';
+  if(code===1||code===2)k='cloud';
+  else if(code===3)k='overcast';
+  else if(code===45||code===48)k='fog';
+  else if((code>=51&&code<=67)||(code>=80&&code<=82))k='rain';
+  else if((code>=71&&code<=77)||(code>=85&&code<=86))k='snow';
+  else if(code>=95)k='thunder';
+  return lang==='zh'?zh[k]:en[k];
+}
+function wIcon(code){
+  var sun='<svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" class="w-sun"><g class="w-rays"><line x1="32" y1="4" x2="32" y2="12"/><line x1="32" y1="52" x2="32" y2="60"/><line x1="4" y1="32" x2="12" y2="32"/><line x1="52" y1="32" x2="60" y2="32"/><line x1="12" y1="12" x2="18" y2="18"/><line x1="46" y1="46" x2="52" y2="52"/><line x1="52" y1="12" x2="46" y2="18"/><line x1="18" y1="46" x2="12" y2="52"/></g><circle cx="32" cy="32" r="10" fill="currentColor" stroke="none"/></svg>';
+  var cloud='<svg viewBox="0 0 64 64" fill="currentColor" class="w-cloud"><g class="w-cloud-a"><path d="M22 42h26a8 8 0 0 0 0-16 11 11 0 0 0-21-3 8 8 0 0 0-5 19z"/></g><g class="w-cloud-b" opacity=".55"><path d="M14 34h8v8h-8z"/></g></svg>';
+  var rain='<svg viewBox="0 0 64 64" fill="currentColor"><path d="M20 34h30a8 8 0 0 0 0-16 11 11 0 0 0-21-3 8 8 0 0 0-9 19z"/><g class="w-rain" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="20" y1="46" x2="16" y2="54"/><line x1="30" y1="46" x2="26" y2="54"/><line x1="40" y1="46" x2="36" y2="54"/><line x1="50" y1="46" x2="46" y2="54"/></g></svg>';
+  var snow='<svg viewBox="0 0 64 64" fill="currentColor"><path d="M20 34h30a8 8 0 0 0 0-16 11 11 0 0 0-21-3 8 8 0 0 0-9 19z"/><g class="w-snow" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="20" y1="48" x2="18" y2="52"/><line x1="30" y1="48" x2="28" y2="52"/><line x1="40" y1="48" x2="38" y2="52"/></g></svg>';
+  var fog='<svg viewBox="0 0 64 64" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M20 34h30a8 8 0 0 0 0-16 11 11 0 0 0-21-3 8 8 0 0 0-9 19z" fill="currentColor"/><line x1="12" y1="46" x2="52" y2="46"/><line x1="18" y1="52" x2="46" y2="52"/></svg>';
+  var thunder='<svg viewBox="0 0 64 64" fill="currentColor"><path d="M20 34h30a8 8 0 0 0 0-16 11 11 0 0 0-21-3 8 8 0 0 0-9 19z"/><path class="w-flash" d="M30 44l-4 12 8-6-3 10 10-12-7 4 2-8z"/></svg>';
+  if(code===0)return sun;
+  if(code===1||code===2)return cloud;
+  if(code===3)return cloud;
+  if(code>=45&&code<=48)return fog;
+  if((code>=51&&code<=67)||(code>=80&&code<=82))return rain;
+  if((code>=71&&code<=77)||(code>=85&&code<=86))return snow;
+  if(code>=95)return thunder;
+  return cloud;
+}
+function renderWeather(w){
+  var el=document.getElementById('weather-inline')||document.getElementById('weather');
+  if(!el)return;
+  var lang=getLang();
+  el.innerHTML='<div class="weather-ico">'+wIcon(w.code)+'</div><div class="weather-info"><div class="weather-city">'+H(w.city)+'</div><div class="weather-main"><span class="weather-temp">'+w.temp+'°</span><span class="weather-desc">'+wDesc(w.code,lang)+'</span></div><div class="weather-wind">'+(lang==='zh'?'风速 ':'Wind ')+w.wind+' km/h</div></div><button class="weather-refresh" title="'+(lang==='zh'?'设置城市':'Set City')+'" onclick="setWeatherCity()"><svg viewBox="0 0 24 24"><path d="M12 21s-7-5.2-7-11a7 7 0 0 1 14 0c0 5.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></button><button class="weather-refresh" title="'+(lang==='zh'?'刷新天气':'Refresh')+'" onclick="refreshWeather()"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M21 21v-5h-5"/></svg></button>';
+}
+function paintWeather(){
+  var el=document.getElementById('weather-inline');
+  if(!el)return;
+  if(window._weatherData) renderWeather(window._weatherData);
+}
+function loadWeather(){
+  var el=document.getElementById('weather-inline')||document.getElementById('weather');
+  if(!el)return;
+  if(window._weatherLoading)return;
+  var today=new Date().toISOString().slice(0,10);
+  var cached=null;
+  try{cached=JSON.parse(localStorage.getItem('cpe_weather_v1')||'null');}catch(e){}
+  if(cached&&cached.date===today){window._weatherData=cached;renderWeather(cached);return;}
+  var manual=null;
+  try{manual=JSON.parse(localStorage.getItem('cpe_weather_manual')||'null');}catch(e){}
+  function fetchWeather(lat,lon,city){
+    window._weatherLoading=true;
+    el.innerHTML='<div class="weather-loading">'+(getLang()==='zh'?'正在获取天气...':'Loading weather...')+'</div>';
+    fetch('https://api.open-meteo.com/v1/forecast?latitude='+lat+'&longitude='+lon+'&current_weather=true&timezone=auto').then(function(r){return r.json()}).then(function(w){
+      var data={date:today,city:city,temp:Math.round(w.current_weather.temperature),code:w.current_weather.weathercode,wind:Math.round(w.current_weather.windspeed)};
+      window._weatherData=data;
+      try{localStorage.setItem('cpe_weather_v1',JSON.stringify(data));}catch(e){}
+      renderWeather(data);
+    }).catch(function(){el.innerHTML='<div class="weather-err">'+(getLang()==='zh'?'天气获取失败':'Weather unavailable')+'</div>';});
+  }
+  function ipWeather(){
+    fetch('https://ipwho.is/').then(function(r){return r.json()}).then(function(geo){
+      if(!geo||!geo.success)throw new Error('geo');
+      fetchWeather(geo.latitude,geo.longitude,geo.city);
+    }).catch(function(){el.innerHTML='<div class="weather-err">'+(getLang()==='zh'?'天气获取失败':'Weather unavailable')+'</div>';});
+  }
+  if(manual&&manual.lat){fetchWeather(manual.lat,manual.lon,manual.city);return;}
+  if(navigator.geolocation){
+    var done=false;
+    navigator.geolocation.getCurrentPosition(function(pos){
+      if(done)return;done=true;
+      fetchWeather(pos.coords.latitude,pos.coords.longitude,getLang()==='zh'?'当前位置':'Current Location');
+    },function(){if(!done){done=true;ipWeather();}},{timeout:6000,maximumAge:600000});
+    setTimeout(function(){if(!done){done=true;ipWeather();}},8000);
+  } else ipWeather();
+}
+function setWeatherCity(){
+  var cur='';
+  try{var c=JSON.parse(localStorage.getItem('cpe_weather_v1')||'null');if(c&&c.city)cur=c.city;}catch(e){}
+  var city=prompt(getLang()==='zh'?'输入城市（例如：顺德）':'Enter city (e.g. Shunde)',cur);
+  if(!city)return;
+  fetch('https://geocoding-api.open-meteo.com/v1/search?name='+encodeURIComponent(city)+'&count=1&language=zh&format=json').then(function(r){return r.json()}).then(function(g){
+    if(!g.results||!g.results[0]){alert(getLang()==='zh'?'未找到城市':'City not found');return;}
+    var r=g.results[0];
+    var name=r.admin1&&r.admin2?(r.admin1==='广东'?'广东':r.admin1)+' '+r.admin2:r.name;
+    var manual={city:name,lat:r.latitude,lon:r.longitude};
+    try{localStorage.setItem('cpe_weather_manual',JSON.stringify(manual));}catch(e){}
+    refreshWeather();
+  }).catch(function(){alert(getLang()==='zh'?'定位失败':'Failed');});
+}
+function refreshWeather(){try{localStorage.removeItem('cpe_weather_v1');}catch(e){} loadWeather();}
+loadWeather();
+
+window.addEventListener('storage',function(e){if(e.key===DARK_KEY){document.documentElement.classList.toggle('dark',e.newValue==='true');updateThemeBtn()}if(e.key===LANG_KEY)location.reload()});
+</script>
+<script src="/js/i18n.js"></script>
+<script>window.addEventListener('DOMContentLoaded',function(){if(typeof applyI18n==='function')applyI18n();});</script>
+
+<script></script>
+</body></html>

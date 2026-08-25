@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+<title>SimpleAdmin - Firmware</title>
+<script>
+(function(){
+  var k="cpe_dashboard_dark";
+  function d(){var v=localStorage.getItem(k);if(v===null)return window.matchMedia("(prefers-color-scheme: dark)").matches;return v==="true"}
+  if(d())document.documentElement.classList.add("dark");
+})();
+</script>
+<link rel="stylesheet" href="/new/assets/index-CUTK8mfj.css"/>
+<style>
+.fw-card{background:var(--glass);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:12px;transition:all .3s}
+.fw-card:hover{box-shadow:0 4px 12px rgba(0,0,0,0.08)}
+.fw-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.stat-item{text-align:center;padding:12px;background:var(--card);border-radius:12px}
+.stat-val{font-size:20px;font-weight:700;color:var(--text)}
+.stat-label{font-size:10px;color:var(--text2);margin-top:4px}
+.stat-unit{font-size:12px;color:var(--text2);font-weight:400}
+.upload-zone{border:2px dashed var(--border);border-radius:12px;padding:32px 16px;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:12px}
+.upload-zone:hover,.upload-zone.drag-over{border-color:var(--blue);background:rgba(0,122,255,0.05)}
+.upload-zone svg{width:40px;height:40px;color:var(--text2);margin-bottom:8px}
+.upload-zone p{color:var(--text2);font-size:13px}
+.upload-zone .hint{font-size:11px;margin-top:4px}
+.file-info{display:flex;align-items:center;gap:12px;padding:12px;background:var(--card);border-radius:10px;margin-bottom:12px}
+.file-icon{width:40px;height:40px;background:var(--blue);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
+.file-name{font-size:13px;font-weight:600;color:var(--text)}
+.file-size{font-size:11px;color:var(--text2)}
+.progress-wrap{margin-bottom:12px}
+.progress-bar{height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;border-radius:3px;transition:width .3s}
+.progress-text{text-align:center;font-size:12px;color:var(--text2);margin-top:4px}
+.btn{padding:10px 16px;border:none;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:6px}
+.btn-primary{background:var(--blue);color:#fff}
+.btn-primary:hover{opacity:0.9}
+.btn-primary:disabled{opacity:0.5;cursor:not-allowed}
+.btn-secondary{background:var(--card);color:var(--text);border:1px solid var(--border)}
+.btn-secondary:hover{background:var(--glass)}
+.btn-danger{background:var(--red);color:#fff}
+.btn-sm{padding:6px 12px;font-size:12px}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap}
+.backup-list{max-height:300px;overflow-y:auto}
+.backup-item{display:flex;justify-content:space-between;align-items:center;padding:10px;border-bottom:1px solid var(--border)}
+.backup-item:last-child{border-bottom:none}
+.backup-name{font-size:13px;font-weight:500;color:var(--text)}
+.backup-size{font-size:11px;color:var(--text2)}
+.backup-actions{display:flex;gap:6px}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600}
+.badge-green{background:rgba(52,199,89,0.15);color:var(--green)}
+.badge-red{background:rgba(255,59,48,0.15);color:var(--red)}
+.badge-blue{background:rgba(0,122,255,0.15);color:var(--blue)}
+.status-msg{padding:10px;border-radius:8px;margin-top:8px;font-size:12px;display:none}
+.status-msg.show{display:block}
+.status-msg.success{background:rgba(52,199,89,0.1);color:var(--green)}
+.status-msg.error{background:rgba(255,59,48,0.1);color:var(--red)}
+.status-msg.info{background:rgba(0,122,255,0.1);color:var(--blue)}
+.tool-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.tool-item{display:flex;align-items:center;gap:10px;padding:12px;background:var(--card);border:1px solid var(--border);border-radius:10px;cursor:pointer;transition:all .2s}
+.tool-item:hover{background:var(--glass);transform:translateY(-1px)}
+.tool-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
+.tool-text{font-size:12px;font-weight:500}
+.tool-desc{font-size:10px;color:var(--text2);margin-top:2px}
+</style>
+</head>
+<body>
+<div class="app">
+<nav class="navbar">
+<div class="navbar-inner">
+<div class="nav-links">
+<a href="new/index.html" class="nav-link">新版首页</a>
+<a href="/" class="nav-link">首页</a>
+<a href="/network.html" class="nav-link">网络</a>
+<a href="/settings.html" class="nav-link">设置</a>
+<a href="/sms.html" class="nav-link">短信</a>
+<a href="/deviceinfo.html" class="nav-link">设备信息</a>
+<span class="nav-active">固件管理</span>
+</div>
+<div class="nav-actions">
+<button class="nav-btn" onclick="toggleLang()" title="Switch Language"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg><span id="lang-code" style="font-size:10px;font-weight:600">zh</span></button>
+<button class="nav-btn" onclick="toggleDark()" title="Toggle Theme" id="theme-btn">🌙</button>
+</div>
+</div>
+</nav>
+
+<main style="max-width:640px;margin:0 auto;padding:12px">
+
+<!-- System Status -->
+<div class="fw-card">
+<div class="fw-title">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg>
+系统状态
+</div>
+<div class="stat-grid">
+<div class="stat-item">
+<div class="stat-val" id="fw-version" style="font-size:11px;font-weight:600">-</div>
+<div class="stat-label">固件版本</div>
+</div>
+<div class="stat-item">
+<div class="stat-val" id="uptime">-<span class="stat-unit"></span></div>
+<div class="stat-label">运行时间</div>
+</div>
+<div class="stat-item">
+<div class="stat-val" id="load-avg">-</div>
+<div class="stat-label">系统负载</div>
+</div>
+</div>
+<div style="display:flex;justify-content:space-between;align-items:center">
+<div>
+<span class="badge badge-green" id="watchdog-status">
+<svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
+看门狗: 加载中...
+</span>
+</div>
+<div class="btn-row">
+<button class="btn btn-secondary btn-sm" onclick="refreshStatus()">
+<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+刷新
+</button>
+<button class="btn btn-secondary btn-sm" onclick="restartWatchdog()">重启看门狗</button>
+</div>
+</div>
+</div>
+
+<!-- Firmware Upload -->
+<div class="fw-card">
+<div class="fw-title">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+固件上传
+</div>
+
+<div id="upload-zone" class="upload-zone" onclick="document.getElementById('file-input').click()">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+<p>点击选择文件 或 拖拽文件到此处</p>
+<p class="hint">支持 .mbn (MCFG) / .bin / .tar.gz</p>
+</div>
+<input type="file" id="file-input" style="display:none" accept=".mbn,.bin,.tar.gz,.zip" onchange="handleFile(this)"/>
+
+<div id="file-selected" style="display:none">
+<div class="file-info">
+<div class="file-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+<div><div class="file-name" id="file-name">-</div><div class="file-size" id="file-size">-</div></div>
+</div>
+</div>
+
+<div id="upload-progress" style="display:none">
+<div class="progress-wrap">
+<div class="progress-bar"><div id="progress-fill" class="progress-fill" style="width:0%;background:var(--blue)"></div></div>
+<div class="progress-text" id="progress-text">上传中...</div>
+</div>
+</div>
+
+<div class="btn-row">
+<button class="btn btn-primary" id="upload-btn" onclick="uploadFirmware()" disabled>
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+上传固件
+</button>
+<button class="btn btn-secondary" onclick="installMCFG()">安装 MCFG</button>
+</div>
+<div id="upload-status" class="status-msg"></div>
+</div>
+
+<!-- Backup Management -->
+<div class="fw-card">
+<div class="fw-title">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+备份管理
+</div>
+<div class="btn-row" style="margin-bottom:12px">
+<button class="btn btn-secondary btn-sm" onclick="packAll()">
+<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+打包下载全部
+</button>
+<button class="btn btn-danger btn-sm" onclick="cleanTestBackups()">清理测试备份</button>
+<button class="btn btn-secondary btn-sm" onclick="loadBackups()">刷新</button>
+</div>
+<div class="backup-list" id="backup-list">
+<div style="text-align:center;color:var(--text2);padding:20px">加载中...</div>
+</div>
+</div>
+
+<!-- Quick Tools -->
+<div class="fw-card">
+<div class="fw-title">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+系统工具
+</div>
+<div class="tool-grid">
+<div class="tool-item" onclick="startTelnet()">
+<div class="tool-icon" style="background:#007AFF"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg></div>
+<div><div class="tool-text">启动 Telnet</div><div class="tool-desc">端口 23</div></div>
+</div>
+<div class="tool-item" onclick="rebootDevice()">
+<div class="tool-icon" style="background:#FF3B30"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></div>
+<div><div class="tool-text">重启设备</div><div class="tool-desc">安全重启</div></div>
+</div>
+</div>
+<div id="tool-status" class="status-msg"></div>
+</div>
+
+</main>
+</div>
+
+<script>
+var LANG_KEY='cpe_dashboard_lang';
+var DARK_KEY='cpe_dashboard_dark';
+var selectedFile = null;
+
+function getLang(){return localStorage.getItem(LANG_KEY)||'zh'}
+function getDark(){var v=localStorage.getItem(DARK_KEY);if(v===null)return window.matchMedia('(prefers-color-scheme:dark)').matches;return v==='true';}
+function toggleLang(){localStorage.setItem(LANG_KEY,getLang()==='zh'?'en':'zh');location.reload();}
+function toggleDark(){localStorage.setItem(DARK_KEY,String(!getDark()));document.documentElement.classList.toggle('dark',!getDark());updateThemeBtn();}
+function updateThemeBtn(){var btn=document.getElementById('theme-btn');if(btn)btn.innerHTML=getDark()?'☀':'🌙';}
+
+function showStatus(id, type, msg) {
+  var el = document.getElementById(id);
+  if (!el) return;
+  el.className = 'status-msg show ' + type;
+  el.textContent = msg;
+  setTimeout(function(){ el.className = 'status-msg'; }, 5000);
+}
+
+// Status
+function refreshStatus() {
+  fetch('/cgi-bin/firmware_upgrade?action=status').then(function(r){return r.json()}).then(function(d){
+    if(d.firmware) document.getElementById('fw-version').textContent = d.firmware.match(/LE\\.UM\\.[^\\s]*/i)?.[0] || d.firmware.substring(0,30);
+    if(d.uptime) document.getElementById('uptime').textContent = d.uptime;
+    if(d.load_avg) document.getElementById('load-avg').textContent = d.load || d.load_avg || '-';
+  }).catch(function(){});
+  
+  fetch('/cgi-bin/firmware_upgrade?action=watchdog_status').then(function(r){return r.json()}).then(function(d){
+    var el = document.getElementById('watchdog-status');
+    if(d.active) {
+      el.className = 'badge badge-green';
+      el.innerHTML = '<svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg> 看门狗: 运行中';
+    } else {
+      el.className = 'badge badge-red';
+      el.innerHTML = '<svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg> 看门狗: 已停止';
+    }
+  }).catch(function(){});
+}
+
+function restartWatchdog() {
+  fetch('/cgi-bin/firmware_upgrade?action=start_watchdog').then(function(r){return r.json()}).then(function(){
+    showStatus('tool-status','success','看门狗已重启');
+    setTimeout(refreshStatus, 2000);
+  });
+}
+
+// Upload
+function handleFile(input) {
+  if(input.files.length > 0) {
+    selectedFile = input.files[0];
+    document.getElementById('file-name').textContent = selectedFile.name;
+    document.getElementById('file-size').textContent = (selectedFile.size/1024/1024).toFixed(2) + ' MB';
+    document.getElementById('file-selected').style.display = 'block';
+    document.getElementById('upload-zone').style.display = 'none';
+    document.getElementById('upload-btn').disabled = false;
+  }
+}
+
+// Drag-drop
+var zone = document.getElementById('upload-zone');
+zone.addEventListener('dragover', function(e){e.preventDefault();zone.classList.add('drag-over');});
+zone.addEventListener('dragleave', function(e){zone.classList.remove('drag-over');});
+zone.addEventListener('drop', function(e){
+  e.preventDefault();zone.classList.remove('drag-over');
+  if(e.dataTransfer.files.length > 0) {
+    selectedFile = e.dataTransfer.files[0];
+    document.getElementById('file-name').textContent = selectedFile.name;
+    document.getElementById('file-size').textContent = (selectedFile.size/1024/1024).toFixed(2) + ' MB';
+    document.getElementById('file-selected').style.display = 'block';
+    document.getElementById('upload-zone').style.display = 'none';
+    document.getElementById('upload-btn').disabled = false;
+  }
+});
+
+function uploadFirmware() {
+  if(!selectedFile) return;
+  var btn = document.getElementById('upload-btn');
+  btn.disabled = true; btn.textContent = '上传中...';
+  document.getElementById('upload-progress').style.display = 'block';
+  
+  var formData = new FormData();
+  formData.append('file', selectedFile);
+  
+  var xhr = new XMLHttpRequest();
+  xhr.open('POST', '/cgi-bin/firmware_upgrade?action=upload', true);
+  xhr.upload.onprogress = function(e) {
+    if(e.lengthComputable) {
+      var pct = Math.round(e.loaded/e.total*100);
+      document.getElementById('progress-fill').style.width = pct + '%';
+      document.getElementById('progress-text').textContent = '上传中 ' + pct + '%';
+    }
+  };
+  xhr.onload = function() {
+    if(xhr.status === 200) {
+      showStatus('upload-status','success','上传成功！');
+      document.getElementById('progress-text').textContent = '完成';
+    } else {
+      showStatus('upload-status','error','上传失败: ' + xhr.statusText);
+    }
+    btn.disabled = false; btn.textContent = '上传固件';
+  };
+  xhr.onerror = function() {
+    showStatus('upload-status','error','网络错误');
+    btn.disabled = false; btn.textContent = '上传固件';
+  };
+  xhr.send(formData);
+}
+
+function installMCFG() {
+  fetch('/cgi-bin/firmware_upgrade?action=install_mcfg').then(function(r){return r.json()}).then(function(d){
+    showStatus('upload-status','success','MCFG 安装完成');
+  }).catch(function(e){showStatus('upload-status','error','安装失败');});
+}
+
+// Backups
+function loadBackups() {
+  fetch('/cgi-bin/firmware_upgrade?action=list').then(function(r){return r.json()}).then(function(d){
+    var list = document.getElementById('backup-list');
+    if(!d.backups || d.backups.length === 0) {
+      list.innerHTML = '<div style="text-align:center;color:var(--text2);padding:20px">暂无备份</div>';
+      return;
+    }
+    var html = '';
+    d.backups.forEach(function(b) {
+      html += '<div class="backup-item">';
+      html += '<div><div class="backup-name">' + (b.tag || b.name || '-') + '</div><div class="backup-size">' + (b.size || '-') + '</div></div>';
+      html += '<div class="backup-actions"><a href="/cgi-bin/firmware_download?name=' + (b.tag || b.name) + '" class="btn btn-secondary btn-sm">下载</a></div>';
+      html += '</div>';
+    });
+    list.innerHTML = html;
+  }).catch(function(){});
+}
+
+function packAll() {
+  showStatus('tool-status','info','正在打包...');
+  fetch('/cgi-bin/firmware_upgrade?action=pack_all').then(function(r){return r.json()}).then(function(d){
+    showStatus('tool-status','success','打包完成，正在下载...');
+    window.location.href = '/cgi-bin/firmware_download?name=all_backups.tar.gz';
+  });
+}
+
+function cleanTestBackups() {
+  if(!confirm('确定清理测试备份？')) return;
+  fetch('/cgi-bin/firmware_upgrade?action=clean_test').then(function(r){return r.json()}).then(function(){
+    showStatus('tool-status','success','测试备份已清理');
+    loadBackups();
+  });
+}
+
+// Tools
+function startTelnet() {
+  fetch('/cgi-bin/firmware_upgrade?action=start_telnet').then(function(r){return r.json()}).then(function(){
+    showStatus('tool-status','success','Telnet 已启动 (端口 23)');
+  });
+}
+
+function rebootDevice() {
+  if(!confirm('确定要重启设备？')) return;
+  fetch('/cgi-bin/firmware_upgrade?action=reboot').then(function(){showStatus('tool-status','success','设备正在重启...');});
+}
+
+// Init
+refreshStatus();
+loadBackups();
+updateThemeBtn();
+setInterval(refreshStatus, 10000);
+
+var langCode = document.getElementById('lang-code');
+if(langCode) langCode.textContent = getLang();
+
+window.addEventListener('storage', function(e) {
+  if(e.key===DARK_KEY){document.documentElement.classList.toggle('dark',e.newValue==='true');updateThemeBtn();}
+  if(e.key===LANG_KEY) location.reload();
+});
+</script>
+</body>
+</html>
